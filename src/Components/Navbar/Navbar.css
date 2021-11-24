@@ -1,0 +1,46 @@
+.container-navbar {
+  position: relative;
+}
+
+.navbarmenu-txt-title {
+  position: absolute;
+  top: 25.5px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+.navbarmenu-txt-title h1{
+  color: #2B9F3F;
+  font-size: 24px;
+  font-weight: 700; 
+}
+
+.navbarmenu-txt-title h1 b{
+  color: #CE1218;
+}
+
+.navbarmenu-container-alert {
+  position: absolute;
+  top: 20px;
+  right: 100px;
+
+  cursor: pointer;
+}
+
+.navbarmenu-container-logo {
+  width: 60px;
+  height: 80px;
+
+  position: absolute;
+  top: 4px;
+  right: 20px;
+
+  background-image: url(../../Images/logo-ifba.png);
+  background-size: 100% 100%; 
+}

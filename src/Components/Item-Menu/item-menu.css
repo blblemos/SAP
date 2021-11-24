@@ -1,0 +1,46 @@
+.menu-itens {
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.menu-itens-title {
+    width: 100%;
+    display: flex;
+    position: relative;
+}
+
+.menu-itens-title h1 {
+    position: relative;
+    left:0;
+
+    font-size: 24px;
+    color: white;
+    font-weight: 900;
+
+    text-shadow: 3px 2px 2px #00000059;
+}
+
+.menu-itens-title .menu-itens-container-arrow{
+    position: absolute;
+    right:0;
+    top: 2.5px;
+
+    cursor: pointer;
+}
+
+.menu-itens ul {
+    position: relative;
+    margin-left: 30px;
+    margin-top: 10px;
+
+    list-style: none;
+
+    font-size: 18px;
+    color: white;
+    font-weight: 900;
+}
+
+.menu-itens ul li {
+    margin-bottom: 5px;
+}

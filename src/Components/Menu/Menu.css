@@ -1,0 +1,100 @@
+.container-menu {
+  position: absolute;
+
+  z-index: 99;
+}
+
+.img-open-menu {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  cursor: pointer;
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+
+  width: 300px;
+  height: 100vh;
+  max-height: 1000px;
+
+  background-color: #2B9F3F;
+
+  transition: 1000ms;
+}
+
+.menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  cursor: pointer;
+}
+
+.menu-container-itens {
+  width: 100%;
+  padding: 10px;
+  
+  position: relative;
+  top: 100px;
+
+}
+
+.menu-container-user {
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  bottom: 0;
+
+  border-top: 2px solid white;
+  display: flex;
+  background-color: #2B9F3F;
+}
+
+.menu-container-user-img{
+  width: 40px;
+  height: 40px;
+  position: relative;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+
+  background-image: url(../../Images/user.jpg);
+  background-size: 100% 100%;
+  border: 1px solid white;
+}
+
+.menu-container-user-text {
+  position: relative;
+  margin-left: 20px;
+}
+
+.menu-container-user-text p {
+  font-size: 24px;
+  font-weight: 900;
+  color: white;
+
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 20px; 
+}
+
+.menu-container-user-icon {
+  margin-left: 10px;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  cursor: pointer;
+}
+
+a{
+  text-decoration: none;
+  color: white;
+}
