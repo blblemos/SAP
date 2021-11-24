@@ -13,6 +13,7 @@ function Rotas() {
             <Route path="/" element={<HomeColic/>} />
             <Route path="/aquisicoes" element={<ListaAquisicoes/>} />
             <Route path="/cadastraraquisicao" element={<CadastrarAquisicao/>} />
+            
             <Route path="/setores" element={<ListaServidor/>} />
             <Route path="/cadastrarsetor" element={<CadastrarServidor/>} />
         </Routes>
