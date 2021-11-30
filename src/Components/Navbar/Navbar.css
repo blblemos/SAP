@@ -1,5 +1,11 @@
 .container-navbar {
-  position: relative;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  max-width: 2500px;
+  z-index: 999; 
+  background-color: white;
+  height: 80px;
 }
 
 .navbarmenu-txt-title {

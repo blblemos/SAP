@@ -1,16 +1,16 @@
-.menu-itens {
+.sap-menu-itens {
     width: 90%;
     margin: 0 auto;
     margin-bottom: 15px;
 }
 
-.menu-itens-title {
+.sap-menu-itens-title {
     width: 100%;
     display: flex;
     position: relative;
 }
 
-.menu-itens-title h1 {
+.sap-menu-itens-title h1 {
     position: relative;
     left:0;
 
@@ -21,7 +21,7 @@
     text-shadow: 3px 2px 2px #00000059;
 }
 
-.menu-itens-title .menu-itens-container-arrow{
+.sap-menu-itens-title .sap-menu-itens-container-arrow{
     position: absolute;
     right:0;
     top: 2.5px;
@@ -29,9 +29,9 @@
     cursor: pointer;
 }
 
-.menu-itens ul {
+.sap-menu-itens ul {
     position: relative;
-    margin-left: 30px;
+    margin-left: 0;
     margin-top: 10px;
 
     list-style: none;
@@ -41,6 +41,6 @@
     font-weight: 900;
 }
 
-.menu-itens ul li {
+.sap-menu-itens ul li {
     margin-bottom: 5px;
 }

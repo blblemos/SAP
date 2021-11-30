@@ -25,7 +25,7 @@ function Menu() {
 
       <div 
         className="menu"
-        style={menu ? { left: "0"} : { left: "-300px"}}
+        style={menu ? { left: "0"} : { left: "-100vw"}}
       >
         <div
           className="menu-close"

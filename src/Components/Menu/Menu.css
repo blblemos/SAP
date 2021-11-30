@@ -22,7 +22,7 @@
 
   background-color: #2B9F3F;
 
-  transition: 1000ms;
+  transition: 500ms;
 }
 
 .menu-close {
@@ -95,6 +95,7 @@
 }
 
 a{
-  text-decoration: none;
-  color: white;
+  text-decoration: none !important;
+  color: white !important;
+  margin-left: 0 !important;
 }
