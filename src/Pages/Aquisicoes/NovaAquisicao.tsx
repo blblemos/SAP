@@ -9,9 +9,9 @@ function CadastrarAquisicao(){
     alert('Enviado!');
   }
   return (
-    <div className="container">
+    <div className="sap-container">
       <NavbarMenu />
-      <div className='container-page'>
+      <div className='sap-container-page'>
         <Formik
           onSubmit={() =>submit()}
           initialValues={{
@@ -19,7 +19,7 @@ function CadastrarAquisicao(){
           }}
         >
           <Form
-            className="form-container"
+            className="sap-form-container"
           >
             <Field 
               type="text"

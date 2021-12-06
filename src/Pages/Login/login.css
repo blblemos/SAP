@@ -1,0 +1,110 @@
+.sap-login-container {
+  position: absolute; 
+  width: 100%; 
+  height: 100%;
+  background: rgb(9,33,14);
+  background: rgb(9,33,14);
+  background: linear-gradient(225deg, rgba(9,33,14,1) 39%, rgba(43,159,63,1) 100%, rgba(43,159,63,1) 100%); 
+}
+
+.sap-form-login {
+  width: 500px;
+  height: 600px;
+
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  background-color: white;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 15px 0px #FFFFFF; 
+  box-shadow: 0px 0px 15px 0px #FFFFFF;
+}
+
+.sap-login-top{
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  margin-bottom: 30px;
+}
+
+.sap-login-top h1{
+  width: 50%;
+  padding-right: 20px;
+  border-right: 3px solid #09210E;
+  color: #09210E; 
+  display: flex;
+  flex-direction: column;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.sap-login-top h1 span {
+  font-size: 9px;
+  font-weight: 300;
+}
+
+.sap-login-logo-img {
+  width: 80px;
+  height: 100px; position: relative;
+  top: 0px;
+  background-image: url('../../Images/logo-ifba.png');
+  background-size: 100% 100%;
+}
+
+.sap-form-container-input{
+  margin:  0 auto;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.sap-form-container-input label{
+  font-size: 18px;
+  font-weight: 700;
+  color: #09210E;
+}
+
+.sap-form-input {
+  border: 2px solid #09210E;
+  border-radius: 10px;
+  height: 50px;
+  padding-left: 10px;
+  color: #09210E;
+}
+
+.sap-form-input:focus{
+  outline: 1px solid #09210E;
+}
+
+.sap-form-login-btn{
+  width: 200px;
+  height: 50px;
+  margin: 30px auto;
+  border-radius: 10px;
+  color: white;
+  background-color: #09210E;
+  border: none;
+  -webkit-box-shadow: 0px 0px 15px 0px #09210E; 
+  box-shadow: 0px 0px 15px 0px #09210E;
+  transition: 1000ms;
+}
+
+.sap-form-login-btn:hover {
+  background-color: #12421d;
+}
+
+.sap-form-container-input span{
+  color: #09210E ;
+}
+
+.sap-form-container-input a{
+  text-align: right;
+  margin-top:5px;
+}
