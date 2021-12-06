@@ -24,13 +24,13 @@ function ItemMenu({nome, itens}: props) {
 
   return (
     <div >
-        <div className="menu-itens">
-            <div className="menu-itens-title">
+        <div className="sap-menu-itens">
+            <div className="sap-menu-itens-title">
               <h1>{nome}</h1>
               <IoMdArrowDropdownCircle 
                 size={24} 
                 color="white" 
-                className="menu-itens-container-arrow"
+                className="sap-menu-itens-container-arrow"
                 onClick={() => stateMenu()}
                 style={menu ? { transform: "rotateX(-180deg)"} : { transform: "rotateX(0deg)" }}
               />

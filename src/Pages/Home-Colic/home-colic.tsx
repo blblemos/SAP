@@ -5,9 +5,9 @@ import './home-colic.css';
 
 function HomeColic() {
   return (
-    <div className="container">
+    <div className="sap-container">
       <NavbarMenu />
-      <div className='container-page'>
+      <div className='sap-container-page'>
         
       </div>
     </div>
