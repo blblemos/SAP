@@ -11,7 +11,7 @@
 }
 
 .form-title h1{
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 900;
   color: #09210E;
 
@@ -99,4 +99,9 @@
 
 .form-btn:hover {
   background: #2B9F3F;
+}
+
+.sap-form-input-disabled {
+  background-color: #09210E;
+  color: white;
 }

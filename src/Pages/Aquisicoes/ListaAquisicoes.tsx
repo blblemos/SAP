@@ -2,9 +2,9 @@ import NavbarMenu from '../../Components/Navbar/Navbar';
 
 function ListaAquisicoes(){
     return (
-        <div className="container">
+        <div className="sap-container">
         <NavbarMenu />
-        <div className='container-page'>
+        <div className='sap-container-page'>
           Lista Aquisições
         </div>
       </div>

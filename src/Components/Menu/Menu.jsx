@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState , useContext} from 'react';
 import {CgMenuRound, CgCloseO} from 'react-icons/cg';
 import {RiEditBoxFill} from 'react-icons/ri';
 import {IoExit} from 'react-icons/io5';
+import StoreContext from '../Store/Context';
 
 import './Menu.css';
 
@@ -9,6 +10,7 @@ import ItemMenu from '../Item-Menu/item-menu';
 
 function Menu() {
   const [menu,setMenu] = useState(false);
+  const { setToken } = useContext(StoreContext);
 
   function stateMenu() {
     setMenu(!menu);
@@ -38,8 +40,8 @@ function Menu() {
           <ItemMenu
             nome='Aquisições'
             itens={[
-              {nomelink:'Nova Aquisição', link: '/cadastraraquisicao'},
-              {nomelink:'Lista de Aquisições', link: '/aquisicoes'}]}
+              {nomelink:'Nova Aquisição', link: '/colic/cadastraraquisicao'},
+              {nomelink:'Lista de Aquisições', link: '/colic/aquisicoes'}]}
           />
 
           <ItemMenu
@@ -59,8 +61,8 @@ function Menu() {
           <ItemMenu
             nome='Setores'
             itens={[
-              {nomelink:'Cadastrar Setores', link: '/cadastrarsetor'},
-              {nomelink:'Lista de Setores', link: '/setores'}]}
+              {nomelink:'Cadastrar Setores', link: '/colic/cadastrarsetor'},
+              {nomelink:'Lista de Setores', link: '/colic/setores'}]}
           />
         </div>
 
@@ -75,7 +77,7 @@ function Menu() {
             <RiEditBoxFill size={21} color="white"/>
           </div>
 
-          <div className='menu-container-user-icon'>
+          <div className='menu-container-user-icon' onClick={() => setToken(null)}>
             <IoExit size={21} color="white"/>
           </div>
         </div>

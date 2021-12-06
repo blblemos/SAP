@@ -1,17 +1,32 @@
+import { useEffect, useState } from "react";
 import {Formik, Field, Form} from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Schema from '../../Utils/Shema';
 
 import '../../Styles/form.css';
 
-function CadastrarSetor(){
-  const navigateTo = useNavigate();
+interface Setor {
+    id: number;
+    name: string;
+    sigla: string;
+    email: string;
+    ramal: string;
+  }
 
+function EditarSetor(){
+  const navigateTo = useNavigate();
+  const {id} = useParams();
+  const [setor,setSetor] = useState<Setor>(
+    {id: 0,name: 'Coordenação de Laboratórios ', sigla: 'COLAB', ramal:'216',email: 'colab.ire@ifba.edu.br'},
+  );
   function onSubmit(values: any) {
-    alert(values.name+' Cadastrado Com Sucesso!');
-    navigateTo('/colic/setores');
+    if (window.confirm("Editar "+setor.sigla+" ?")) {
+      alert(values.name+' Editado Com Sucesso!');
+      navigateTo('/colic/setores');
+    }
+    
   }
 
 
@@ -23,10 +38,10 @@ function CadastrarSetor(){
           validationSchema={Schema}
           onSubmit={onSubmit}
           initialValues={{
-            name: '', 
-            ramal: '',
-            sigla: '',
-            email: '',
+            name: setor.name, 
+            ramal: setor.ramal,
+            sigla: setor.sigla,
+            email: setor.email,
           }}
         >
           {({errors,touched}) => {
@@ -35,7 +50,7 @@ function CadastrarSetor(){
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>CADASTRO DE SETORES</h1>
+                  <h1>EDITAR SETOR</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
@@ -71,7 +86,7 @@ function CadastrarSetor(){
                   <button 
                     type='submit' 
                     className="form-btn">
-                      Cadastrar
+                      Editar
                   </button>
                   <div className="clear"></div>
                 </div>
@@ -84,4 +99,4 @@ function CadastrarSetor(){
   );
 }
 
-export default CadastrarSetor;
+export default EditarSetor;
