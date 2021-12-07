@@ -47,15 +47,15 @@ function Menu() {
           <ItemMenu
             nome='Fornecedores'
             itens={[
-              {nomelink:'Cadastrar Fornecedor', link: ''},
-              {nomelink:'Lista de Fornecedores', link: ''}]}
+              {nomelink:'Cadastrar Fornecedor', link: '/colic/cadastrar/fornecedor'},
+              {nomelink:'Lista de Fornecedores', link: '/colic/fornecedores'}]}
           />
 
           <ItemMenu
             nome='Servidores'
             itens={[
-              {nomelink:'Cadastrar Servidor', link: ''},
-              {nomelink:'Lista de Servidores', link: ''}]}
+              {nomelink:'Cadastrar Servidor', link: '/colic/cadastrar/servidor'},
+              {nomelink:'Lista de Servidores', link: '/colic/servidores'}]}
           />
 
           <ItemMenu
