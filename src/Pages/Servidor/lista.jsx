@@ -16,11 +16,7 @@ const { SearchBar } = Search;
 function ListaServidor(){
   const [setores,setSetores] = useState([]);
 
-  useEffect(() => {
-    api.get('posts').then(response => {
-      setSetores(response.data);
-    })
-}, []);
+  
 
     const columns = [
       {
