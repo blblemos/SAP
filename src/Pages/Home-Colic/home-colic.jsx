@@ -18,7 +18,11 @@ const { SearchBar } = Search;
 function HomeColic() {
   const [setores,setSetores] = useState([]);
 
-  
+  useEffect(() => {
+    api.get('posts').then(response => {
+      setSetores(response.data);
+    })
+}, []);
 
     const columns = [
       {
