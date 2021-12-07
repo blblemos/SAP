@@ -16,7 +16,11 @@ const { SearchBar } = Search;
 function ListaAquisicoes(){
   const [setores,setSetores] = useState([]);
 
- 
+  useEffect(() => {
+    api.get('posts').then(response => {
+      setSetores(response.data);
+    })
+}, []);
 
     const columns = [
       {

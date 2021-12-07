@@ -17,7 +17,11 @@ const { SearchBar } = Search;
 function ListaFornecedor(){
   const [setores,setSetores] = useState([]);
 
- 
+  useEffect(() => {
+    api.get('posts').then(response => {
+      setSetores(response.data);
+    })
+}, []);
 
     const columns = [
       {
