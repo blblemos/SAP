@@ -9,6 +9,7 @@ import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 
 import api from '../../Services/api';
+import axios from 'axios';
 
 import '../../Styles/table.css';
 import './home-colic.css';
@@ -18,10 +19,16 @@ const { SearchBar } = Search;
 function HomeColic() {
   const [setores,setSetores] = useState([]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     api.get('posts').then(response => {
       setSetores(response.data);
     })
+}, []);*/
+
+useEffect(() => {
+  axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
+    setSetores(response.data);
+  })
 }, []);
 
     const columns = [

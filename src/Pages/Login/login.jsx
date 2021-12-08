@@ -1,29 +1,32 @@
-import { useState, useContext } from 'react';
-import {Formik, Field, Form} from 'formik';
+import { useState, useContext,useEffect } from 'react';
+import {Formik, Field, Form, validateYupSchema} from 'formik';
 import { Link , useNavigate  } from 'react-router-dom';
 import StoreContext from '../../Components/Store/Context';
 
-import './login.css';
+import api from '../../Services/api';
 
-function loginFake({ user, login }) {
-  if (user === 'adm' && login === 'adm') {
-    return { token: '1234' };
-  }
-  return { error: 'Usuário ou senha inválido' };
-}
+import './login.css';
 
 export default function Login(){
   const navigateTo = useNavigate();
   const { setToken } = useContext(StoreContext);
   
-  function onSubmit(values, actions) {
-    const { token } = loginFake(values); 
+  async function onSubmit(values, actions) {
 
-    if (token) {
-      setToken(token);
-      return navigateTo('/colic/home');
-    }
-    
+    api.post('/login',{
+      username: values.user,
+      password: values.login
+    }).then(function (response) {
+      console.log(response.headers.authorization);
+      if (response.headers.authorization) {
+        setToken(response.headers.authorization);
+        return navigateTo('/colic/home');
+      }
+    }).catch(function (error) {
+      console.log(error);
+      alert('Error: ' + error.message);
+    });
+
     actions.resetForm({});
   }
   return (
