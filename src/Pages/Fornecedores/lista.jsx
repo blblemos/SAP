@@ -1,4 +1,4 @@
-import { useState , useEffect } from 'react';
+import { useState , useEffect,useContext } from 'react';
 import { Link } from 'react-router-dom';
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -9,6 +9,7 @@ import {MdOutlineOpenInNew} from 'react-icons/md';
 import {BsStarFill, BsStar} from 'react-icons/bs';
 
 import api from '../../Services/api';
+import StoreContext from '../../Components/Store/Context';
 
 import '../../Styles/table.css';
 
@@ -16,24 +17,28 @@ const { SearchBar } = Search;
 
 function ListaFornecedor(){
   const [setores,setSetores] = useState([]);
+  const { token } = useContext(StoreContext);
+  const config = {
+    headers: { Authorization: token }
+  };
 
   useEffect(() => {
-    api.get('posts').then(response => {
-      setSetores(response.data);
+    api.get('fornecedores', config).then(response => {
+      setSetores(response.data); console.log(response.data); 
     })
 }, []);
 
     const columns = [
       {
-        dataField: 'userId',
+        dataField: 'razaoSocial',
         text: 'RAZÃO SOCIAL'
       },
       {
-        dataField: 'title',
+        dataField: 'cnpj',
         text: 'CNPJ'
       },
       {
-        dataField: 'userId',
+        dataField: 'avaliacao',
         text: 'AVALIAÇÃO',
         formatter: (row) => {
             switch (row) {

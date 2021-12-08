@@ -8,6 +8,7 @@ import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 
 import api from '../../Services/api';
+import axios from 'axios';
 
 import '../../Styles/table.css';
 
@@ -17,7 +18,7 @@ function ListaAquisicoes(){
   const [setores,setSetores] = useState([]);
 
   useEffect(() => {
-    api.get('posts').then(response => {
+    axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
       setSetores(response.data);
     })
 }, []);

@@ -1,19 +1,45 @@
-import {useState} from 'react';
+import {useState,useEffect,useContext} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate } from 'react-router-dom';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Schema from '../../Utils/Shema';
+import StoreContext from '../../Components/Store/Context';
+import api from '../../Services/api';
 
 import '../../Styles/form.css';
 
 function CadastrarFornecedor(){
   const navigateTo = useNavigate();
+  const { token } = useContext(StoreContext);
   const [whatsapp, setWhatsapp] = useState(false); 
 
-  function onSubmit(values) {
-    alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
-    navigateTo('/colic/fornecedores');
+  function onSubmit(values) {alert("entrou");
+
+    const config = {
+      headers: { Authorization: token }
+    };
+
+    const bodyParameters = {
+      razaoSocial: values.RazaoSocial,
+      fantasia: values.NomeFantasia,
+      cnpj: values.CNPJ,
+      cidade: values.cidade,
+      estado: values.uf,
+      telefone: values.TelefoneFixo,
+      email: values.email,
+      nomeResponsavel: values.responsavel,
+      avaliacao: 0
+    };
+  
+    
+      api.post('fornecedores',bodyParameters, config).then(function (response) {
+        alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
+        navigateTo('/colic/fornecedores');
+      }).catch(function (error) {
+        alert('Error: ' + error.message);
+      });
+    
   }
 
 
@@ -22,7 +48,7 @@ function CadastrarFornecedor(){
       <NavbarMenu />
       <div className='sap-container-page'>
         <Formik
-          validationSchema={Schema}
+          
           onSubmit={onSubmit}
           initialValues={{
             NomeFantasia: '', 
