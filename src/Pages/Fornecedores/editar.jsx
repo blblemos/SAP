@@ -1,37 +1,69 @@
-import {useState} from 'react';
+import {useEffect, useState, useContext} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate , useParams } from 'react-router-dom';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Schema from '../../Utils/Shema';
+import api from '../../Services/api';
+import StoreContext from '../../Components/Store/Context';
 
 import '../../Styles/form.css';
-
-interface Fornecedor {
-  id: number
-  NomeFantasia: string 
-  CNPJ: string,
-  TelefoneFixo: string,
-  email: string,
-  Endereco: string,
-  RazaoSocial: string,
-  responsavel: string,
-  Celular: string,
-  endereco: string,
-  cidade: string,
-  uf: string
-}
 
 function EditarFornecedor(){
   const navigateTo = useNavigate();
   const {id} = useParams();
-  const [whatsapp, setWhatsapp] = useState(false); 
+  const [whatsapp, setWhatsapp] = useState(false);
+  const { token } = useContext(StoreContext);
+  const config = {
+    headers: { Authorization: token }
+  };
 
-  function onSubmit(values : any) {
-    alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
-    navigateTo('/colic/fornecedores');
+  const [fornecedor, setFornecedor] = useState({
+    id: id,
+    fantasia: '', 
+    cnpj: '',
+    telefone: '',
+    email: '',
+    Endereco: '',
+    razaoSocial: '',
+    nomeResponsavel: '',
+    Celular: '',
+    endereco: '',
+    cidade: '',
+    estado: '',
+    avaliacao: 0
+  });
+
+  useEffect(() => {
+    api.get(`fornecedores/${id}`, config).then(response => {
+      setFornecedor({
+        id: id,
+        fantasia: response.data.fantasia, 
+        cnpj: response.data.cnpj,
+        telefone: response.data.telefone,
+        email: response.data.email,
+        Endereco: '',
+        razaoSocial: response.data.razaoSocial,
+        nomeResponsavel: response.data.nomenomeResponsavel,
+        Celular: '',
+        endereco: '',
+        cidade: '',
+        estado: response.data.estado,
+        avaliacao: response.data.avaliacao
+      })
+      
+    });
+  }, [id]);
+
+  function onSubmit(values) {
+    alert('entrou');
+    api.put(`fornecedores/${id}`,fornecedor, config).then(function (response) {
+      alert(values.fantasia+' Editado Com Sucesso!');
+      navigateTo('/colic/fornecedores');
+    }).catch(function (error) {
+      alert('Error: ' + error.message);
+    });
   }
-
 
   return (
     <div className="sap-container">
@@ -40,47 +72,37 @@ function EditarFornecedor(){
         <Formik
           validationSchema={Schema}
           onSubmit={onSubmit}
-          initialValues={{
-            NomeFantasia: '', 
-            CNPJ: '',
-            TelefoneFixo: '',
-            email: '',
-            Endereco: '',
-            RazaoSocial: '',
-            responsavel: '',
-            Celular: '',
-            endereco: '',
-            cidade: '',
-            uf: 'UF'
-          }}
+          initialValues={fornecedor}
+          enableReinitialize
+
         >
-          {({errors,touched}) => {
+          {({errors,touched, values}) => {
             return(
               <Form
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>CADASTRO DE FORNECEDORES</h1>
+                  <h1>Editar  {fornecedor.fantasia}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
                     <label>Nome Fantasia</label>
                     <Field
-                      className={errors.NomeFantasia && touched.NomeFantasia ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
+                      className={errors.fantasia && touched.fantasia ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
                       type="text"
-                      name='NomeFantasia'
+                      name='fantasia'
                     />
-                    <label>CNPJ</label>
+                    <label>cnpj</label>
                     <Field
-                      className={errors.CNPJ && touched.CNPJ ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.cnpj && touched.cnpj ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='CNPJ' 
+                      name='cnpj' 
                     />
                     <label>Telefone Fixo</label>
                     <Field
-                      className={errors.TelefoneFixo && touched.TelefoneFixo ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.telefone && touched.telefone ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='TelefoneFixo'
+                      name='telefone'
                     />
                     <label>E-mail</label>
                     <Field
@@ -98,15 +120,15 @@ function EditarFornecedor(){
                   <div className="form-elements-column">
                     <label>Razão Social</label>
                     <Field
-                      className={errors.RazaoSocial && touched.RazaoSocial ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.razaoSocial && touched.razaoSocial ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='RazaoSocial' 
+                      name='razaoSocial' 
                     />
                     <label>Nome do(a) responsável</label>
                     <Field
-                      className={errors.responsavel && touched.responsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.nomeResponsavel && touched.nomeResponsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='responsavel' 
+                      name='nomeResponsavel' 
                     />
                     
                     <div className='sap-form-container-input-row'>
@@ -157,9 +179,9 @@ function EditarFornecedor(){
                           <div className="sap-form-button-select">
                           <Field
                             className='sap-form-select' 
-                            name="uf" 
+                            name="estado" 
                             as="select">
-                            <option value="UF">UF</option>
+                            <option value="estado">estado</option>
                             <option value="AC">AC</option>
                             <option value="AL">AL</option>
                             <option value="AP">AP</option>

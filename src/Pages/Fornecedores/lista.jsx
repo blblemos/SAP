@@ -21,10 +21,11 @@ function ListaFornecedor(){
   const config = {
     headers: { Authorization: token }
   };
-
+  
   useEffect(() => {
     api.get('fornecedores', config).then(response => {
-      setSetores(response.data); console.log(response.data); 
+      setSetores(response.data); 
+
     })
 }, []);
 
@@ -85,7 +86,7 @@ function ListaFornecedor(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
             <Link className='sap-table-link-icon' to={'/colic/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
