@@ -1,68 +1,68 @@
-import {useEffect, useState, useContext} from 'react';
+import {useEffect, useState} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate , useParams } from 'react-router-dom';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Schema from '../../Utils/Shema';
-import api from '../../Services/api';
-import StoreContext from '../../Components/Store/Context';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
 
 function EditarFornecedor(){
   const navigateTo = useNavigate();
   const {id} = useParams();
+  const [avaliacao, setAvaliacao] = useState(0);
   const [whatsapp, setWhatsapp] = useState(false);
-  const { token } = useContext(StoreContext);
-  const config = {
-    headers: { Authorization: token }
-  };
+  const config = Config();
 
   const [fornecedor, setFornecedor] = useState({
-    id: id,
     fantasia: '', 
     cnpj: '',
     telefone: '',
     email: '',
-    Endereco: '',
     razaoSocial: '',
     nomeResponsavel: '',
-    Celular: '',
-    endereco: '',
     cidade: '',
     estado: '',
-    avaliacao: 0
   });
 
   useEffect(() => {
-    api.get(`fornecedores/${id}`, config).then(response => {
+    api.get(`fornecedores/${id}`, config).then(response => {console.log(response.data);
+      setAvaliacao(parseInt(response.data.avaliacao));
       setFornecedor({
-        id: id,
         fantasia: response.data.fantasia, 
         cnpj: response.data.cnpj,
         telefone: response.data.telefone,
         email: response.data.email,
-        Endereco: '',
         razaoSocial: response.data.razaoSocial,
-        nomeResponsavel: response.data.nomenomeResponsavel,
-        Celular: '',
-        endereco: '',
-        cidade: '',
+        nomeResponsavel: response.data.nomeResponsavel,
+        cidade: response.data.cidade,
         estado: response.data.estado,
-        avaliacao: response.data.avaliacao
       })
-      
     });
   }, [id]);
 
-  function onSubmit(values) {
-    alert('entrou');
-    api.put(`fornecedores/${id}`,fornecedor, config).then(function (response) {
-      alert(values.fantasia+' Editado Com Sucesso!');
-      navigateTo('/colic/fornecedores');
-    }).catch(function (error) {
-      alert('Error: ' + error.message);
-    });
+  async function onSubmit(values) {
+    await api.put(`fornecedores/${id}`, 
+      {
+        id: parseInt(id),
+        fantasia: values.fantasia, 
+        cnpj: values.cnpj,
+        telefone: values.telefone,
+        email: values.email,
+        razaoSocial: values.razaoSocial,
+        nomeResponsavel: values.nomeResponsavel,
+        cidade: values.cidade,
+        estado: values.estado,
+        avaliacao: parseInt(avaliacao)
+      }, config)
+      .then(function () {
+        alert(values.fantasia+' Editado Com Sucesso!');
+        navigateTo('/colic/fornecedores');
+      })
+      .catch(function (error) {
+        alert('Error: ' + error.message);
+      });
   }
 
   return (
@@ -70,13 +70,13 @@ function EditarFornecedor(){
       <NavbarMenu />
       <div className='sap-container-page'>
         <Formik
-          validationSchema={Schema}
+
           onSubmit={onSubmit}
           initialValues={fornecedor}
           enableReinitialize
 
         >
-          {({errors,touched, values}) => {
+          {({errors,touched}) => {
             return(
               <Form
                 className="sap-form-container"
@@ -169,7 +169,7 @@ function EditarFornecedor(){
                         <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
                           <label htmlFor='cidade'>Cidade</label>
                             <Field
-                            className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                            className={errors.cidade && touched.cidade ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                             type="text"
                             name='cidade'
                             />

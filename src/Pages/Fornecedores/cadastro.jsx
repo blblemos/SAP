@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Schema from '../../Utils/Shema';
 import StoreContext from '../../Components/Store/Context';
-import api from '../../Services/api';
+import {api} from '../../Services/api';
 
 import '../../Styles/form.css';
 

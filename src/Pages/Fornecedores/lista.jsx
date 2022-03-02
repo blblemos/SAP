@@ -1,4 +1,4 @@
-import { useState , useEffect,useContext } from 'react';
+import { useState , useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -8,8 +8,7 @@ import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 import {BsStarFill, BsStar} from 'react-icons/bs';
 
-import api from '../../Services/api';
-import StoreContext from '../../Components/Store/Context';
+import {api, Config, SetarTokenNull} from '../../Services/api';
 
 import '../../Styles/table.css';
 
@@ -17,15 +16,16 @@ const { SearchBar } = Search;
 
 function ListaFornecedor(){
   const [setores,setSetores] = useState([]);
-  const { token } = useContext(StoreContext);
-  const config = {
-    headers: { Authorization: token }
-  };
+  const config = Config();
   
   useEffect(() => {
     api.get('fornecedores', config).then(response => {
       setSetores(response.data); 
 
+    }).catch(function(error){
+      if (error.response.status = 403) {
+        SetarTokenNull();
+      }
     })
 }, []);
 

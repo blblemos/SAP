@@ -3,7 +3,7 @@ import {Formik, Field, Form, validateYupSchema} from 'formik';
 import { Link , useNavigate  } from 'react-router-dom';
 import StoreContext from '../../Components/Store/Context';
 
-import api from '../../Services/api';
+import {api} from '../../Services/api';
 
 
 import './login.css';
@@ -14,22 +14,21 @@ export default function Login(){
   
   async function onSubmit(values, actions) {
 
-    api.post('/login',{
+    await  api.post('/login',{
       username: values.user,
       password: values.login
     }).then(function (response) {
-      console.log(response.headers.authorization);
       if (response.headers.authorization) {
-        setToken(response.headers.authorization);
+        setToken(response.headers.authorization);console.log(response.headers.authorization);
         return navigateTo('/colic/home');
       }
     }).catch(function (error) {
-      console.log(error);
       alert('Error: ' + error.message);
     });
 
     actions.resetForm({});
   }
+  
   return (
     <div className="sap-login-container">
       <Formik

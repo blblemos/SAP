@@ -1,7 +1,19 @@
 import axios from 'axios';
+import {useContext} from 'react';
+import StoreContext from '../Components/Store/Context';
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: 'https://apiestagioifba.herokuapp.com'
-})
+});
 
-export default api;
+export function Config(){
+    const { token } = useContext(StoreContext);
+    return {headers: { Authorization: token }};
+}
+
+export function SetarTokenNull(){
+    const { setToken } = useContext(StoreContext);
+    setToken(null);
+}
+
+export default {api, Config, SetarTokenNull};
