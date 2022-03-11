@@ -20,18 +20,18 @@ function ListaFornecedor(){
   
   useEffect(() => {
     api.get('fornecedores', config).then(response => {
-      setSetores(response.data); 
+      setSetores(response.data); console.log(response.data);
 
     }).catch(function(error){
       if (error.response.status = 403) {
         SetarTokenNull();
       }
     })
-}, []);
+}, []); 
 
     const columns = [
       {
-        dataField: 'razaoSocial',
+        dataField: 'razao_social',
         text: 'RAZÃO SOCIAL'
       },
       {
