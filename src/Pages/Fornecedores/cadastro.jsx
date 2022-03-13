@@ -1,70 +1,71 @@
-import {useState,useEffect,useContext} from 'react';
+import {useState} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { mask as masker, unMask } from "remask";
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import Schema from '../../Utils/Shema';
-import StoreContext from '../../Components/Store/Context';
-import {api} from '../../Services/api';
+import {api, Config} from '../../Services/api';
+import Schema from '../../Utils/ShemaFornecedores';
 
 import '../../Styles/form.css';
 
 function CadastrarFornecedor(){
   const navigateTo = useNavigate();
-  const { token } = useContext(StoreContext);
-  const [whatsapp, setWhatsapp] = useState(false); 
-
-  function onSubmit(values) {alert("entrou");
-
-    const config = {
-      headers: { Authorization: token }
-    };
-
+  const [whatsapp, setWhatsapp] = useState(false);
+  const config = Config(); 
+  function onSubmit(values) {
     const bodyParameters = {
       razaoSocial: values.RazaoSocial,
-      fantasia: values.NomeFantasia,
-      cnpj: values.CNPJ,
-      cidade: values.cidade,
-      estado: values.uf,
-      telefone: values.TelefoneFixo,
-      email: values.email,
-      nomeResponsavel: values.responsavel,
-      avaliacao: 0
-    };
-  
+      nomeFantasia: values.NomeFantasia,
+      cnpj: values.Cnpj,
+      endereco: values.Endereco,
+      cidade: values.Cidade,
+      estado: values.Uf,
+      telefoneFixo: values.TelefoneFixo,
+      email: values.Email,
+      cel: values.Celular,
+      nomeResponsavel: values.Responsavel,
+      wpp: whatsapp,
+      obsOpen:values.Observacoes,
+      avaliacaoPrazo: 0,
+      avaliacaoEntrega: 0,
+      avaliacaoContato: 0,
+    };console.log(bodyParameters.obsOpen);
     
       api.post('fornecedores',bodyParameters, config).then(function (response) {
         alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
         navigateTo('/colic/fornecedores');
       }).catch(function (error) {
-        alert('Error: ' + error.message);
+        let msgError = '';
+        for (var index = 0; index < error.response.data.length; index++) {
+          msgError = msgError+error.response.data[index].message+'\n';
+        }
+        alert(msgError);
       });
     
   }
-
-
   return (
     <div className="sap-container">
       <NavbarMenu />
       <div className='sap-container-page'>
         <Formik
-          
+          validationSchema={Schema}
           onSubmit={onSubmit}
           initialValues={{
-            NomeFantasia: '', 
-            CNPJ: '',
-            TelefoneFixo: '',
-            email: '',
-            Endereco: '',
             RazaoSocial: '',
-            responsavel: '',
-            Celular: '',
+            NomeFantasia: '', 
+            Cnpj: '',
             Endereco: '',
-            cidade: '',
-            uf: 'UF'
+            Cidade: '',
+            Uf: 'UF',
+            TelefoneFixo: '',
+            Email: '',
+            Celular: '',
+            Responsavel: '',
+            Observacoes: '',
           }}
         >
-          {({errors,touched}) => {
+          {({errors,touched,values}) => {
             return(
               <Form
                 className="sap-form-container"
@@ -80,23 +81,27 @@ function CadastrarFornecedor(){
                       type="text"
                       name='NomeFantasia'
                     />
-                    <label>CNPJ</label>
+                    <label>Cnpj</label>
                     <Field
-                      className={errors.CNPJ && touched.CNPJ ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Cnpj && touched.Cnpj ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='CNPJ' 
+                      name='Cnpj'
+                      MAXLENGTH = {18}
+                      value={masker(unMask(values.Cnpj),["99.999.999/9999-99"])} 
                     />
                     <label>Telefone Fixo</label>
                     <Field
                       className={errors.TelefoneFixo && touched.TelefoneFixo ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
                       name='TelefoneFixo'
+                      MAXLENGTH = {15}
+                      value={masker(unMask(values.TelefoneFixo),["(99) 9999-9999" , "(99)9 9999-9999"])} 
                     />
                     <label>E-mail</label>
                     <Field
-                      className={errors.email && touched.email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Email && touched.Email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='email' 
+                      name='Email' 
                     />
                     <label>Endereço</label>
                     <Field
@@ -114,9 +119,9 @@ function CadastrarFornecedor(){
                     />
                     <label>Nome do(a) responsável</label>
                     <Field
-                      className={errors.responsavel && touched.responsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Responsavel && touched.Responsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='responsavel' 
+                      name='Responsavel' 
                     />
                     
                     <div className='sap-form-container-input-row'>
@@ -126,6 +131,8 @@ function CadastrarFornecedor(){
                             className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                             type="text"
                             name='Celular'
+                            MAXLENGTH = {15}
+                            value={masker(unMask(values.Celular),["(99) 9999-9999","(99)9 9999-9999"])} 
                             />
                         </div>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
@@ -138,7 +145,6 @@ function CadastrarFornecedor(){
                             >
                               Sim
                             </button>
-
                             <button 
                               type="button"
                               className={!whatsapp ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
@@ -146,28 +152,26 @@ function CadastrarFornecedor(){
                             >
                               Não
                             </button>
-
                           </div>
                         </div>
                     </div>
                     <div className="sap-form-container-input-row">
-
                     </div>
                     <div className='sap-form-container-input-row'>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
                           <label htmlFor='cidade'>Cidade</label>
                             <Field
-                            className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                            className={errors.Cidade && touched.Cidade ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                             type="text"
-                            name='cidade'
+                            name='Cidade'
                             />
                         </div>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
                           <label>Estado</label>
                           <div className="sap-form-button-select">
                           <Field
-                            className='sap-form-select' 
-                            name="uf" 
+                            className={errors.Uf && touched.Uf ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
+                            name="Uf" 
                             as="select">
                             <option value="UF">UF</option>
                             <option value="AC">AC</option>
@@ -198,13 +202,19 @@ function CadastrarFornecedor(){
                             <option value="TO">TO</option>
                             <option value="DF">DF</option>
                           </Field>
-
                           </div>
                         </div>
                     </div>
                     
                   </div>
                 </div>
+                <label>Observações</label>
+                    <Field
+                      as='textarea'
+                      className={errors.Observacoes && touched.Observacoes ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
+                      type="textarea"
+                      name='Observacoes'
+                    />
                 <div className="form-footer">
                   <button 
                     type='submit' 
