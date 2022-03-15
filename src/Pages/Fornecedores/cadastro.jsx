@@ -30,8 +30,7 @@ function CadastrarFornecedor(){
       avaliacaoPrazo: 0,
       avaliacaoEntrega: 0,
       avaliacaoContato: 0,
-    };console.log(bodyParameters.obsOpen);
-    
+    };
       api.post('fornecedores',bodyParameters, config).then(function (response) {
         alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
         navigateTo('/colic/fornecedores');
@@ -86,7 +85,7 @@ function CadastrarFornecedor(){
                       className={errors.Cnpj && touched.Cnpj ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
                       name='Cnpj'
-                      MAXLENGTH = {18}
+                      maxLength = {18}
                       value={masker(unMask(values.Cnpj),["99.999.999/9999-99"])} 
                     />
                     <label>Telefone Fixo</label>
@@ -94,7 +93,7 @@ function CadastrarFornecedor(){
                       className={errors.TelefoneFixo && touched.TelefoneFixo ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
                       name='TelefoneFixo'
-                      MAXLENGTH = {15}
+                      maxLength = {15}
                       value={masker(unMask(values.TelefoneFixo),["(99) 9999-9999" , "(99)9 9999-9999"])} 
                     />
                     <label>E-mail</label>
@@ -131,7 +130,7 @@ function CadastrarFornecedor(){
                             className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                             type="text"
                             name='Celular'
-                            MAXLENGTH = {15}
+                            maxLength = {15}
                             value={masker(unMask(values.Celular),["(99) 9999-9999","(99)9 9999-9999"])} 
                             />
                         </div>

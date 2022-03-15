@@ -85,13 +85,12 @@ function ListaFornecedor(){
         formatter: (row) => (
           <div>
             <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-            <Link className='sap-table-link-icon' to={'/colic/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/vizualizar/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),
       }
     ];
-
     const pageButtonRenderer = ({
       page,
       active,
