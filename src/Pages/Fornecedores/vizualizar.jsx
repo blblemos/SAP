@@ -3,7 +3,8 @@ import {Formik, Field, Form} from 'formik';
 import { useNavigate , useParams, Link } from 'react-router-dom';
 import {RiEditBoxFill} from 'react-icons/ri';
 
-import NavbarMenu from '../../Components/Navbar/Navbar';;
+import NavbarMenu from '../../Components/Navbar/Navbar';
+
 import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
