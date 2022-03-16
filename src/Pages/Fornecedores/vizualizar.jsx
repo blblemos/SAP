@@ -3,8 +3,7 @@ import {Formik, Field, Form} from 'formik';
 import { useNavigate , useParams, Link } from 'react-router-dom';
 import {RiEditBoxFill} from 'react-icons/ri';
 
-import NavbarMenu from '../../Components/Navbar/Navbar';
-import Schema from '../../Utils/ShemaFornecedores';
+import NavbarMenu from '../../Components/Navbar/Navbar';;
 import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
@@ -56,7 +55,6 @@ function VizualizarFornecedor(){
       <NavbarMenu />
       <div className='sap-container-page'>
         <Formik
-          validationSchema={Schema}
           initialValues={fornecedor}
           enableReinitialize
         >

@@ -14,7 +14,6 @@ function EditarFornecedor(){
   const {id} = useParams();
   const [whatsapp, setWhatsapp] = useState(false);
   const config = Config();
-
   const [fornecedor, setFornecedor] = useState({
     RazaoSocial: '',
     NomeFantasia: '', 
@@ -31,7 +30,6 @@ function EditarFornecedor(){
     avaliacao_entrega: 0,
     avaliacao_contato: 0
   });
-
   useEffect(() => {
     api.get(`fornecedores/${id}`, config).then(response => {
       setWhatsapp(response.data.wpp);

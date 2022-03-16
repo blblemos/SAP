@@ -15,18 +15,17 @@ import '../../Styles/table.css';
 const { SearchBar } = Search;
 
 function ListaFornecedor(){
-  const [setores,setSetores] = useState([]);
+  const [fornecedores,setFornecedores] = useState([]);
   const config = Config();
-  
   useEffect(() => {
     api.get('fornecedores', config).then(response => {
-      setSetores(response.data); 
+      setFornecedores(response.data); 
     }).catch(function(error){
       if (error.response.status = 403) {
         SetarTokenNull();
       }
     })
-}, []); 
+  }, []); 
     const columns = [
       {
         dataField: 'razaoSocial',
@@ -134,7 +133,7 @@ function ListaFornecedor(){
             <div className='table-table'>
               <ToolkitProvider
                 keyField ='id'
-                data={setores}
+                data={fornecedores}
                 columns={columns}
                 search
               >
