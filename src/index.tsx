@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App key={'APP'}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

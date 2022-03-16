@@ -1,38 +1,89 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate , useParams } from 'react-router-dom';
+import { mask as masker, unMask } from "remask";
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import Schema from '../../Utils/Shema';
+import Schema from '../../Utils/ShemaFornecedores';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
-
-interface Fornecedor {
-  id: number
-  NomeFantasia: string 
-  CNPJ: string,
-  TelefoneFixo: string,
-  email: string,
-  Endereco: string,
-  RazaoSocial: string,
-  responsavel: string,
-  Celular: string,
-  endereco: string,
-  cidade: string,
-  uf: string
-}
 
 function EditarFornecedor(){
   const navigateTo = useNavigate();
   const {id} = useParams();
-  const [whatsapp, setWhatsapp] = useState(false); 
+  const [whatsapp, setWhatsapp] = useState(false);
+  const config = Config();
+  const [fornecedor, setFornecedor] = useState({
+    RazaoSocial: '',
+    NomeFantasia: '', 
+    Cnpj: '',
+    Endereco: '',
+    Cidade: '',
+    Uf: '',
+    TelefoneFixo: '',
+    Email: '',
+    Celular: '',
+    Responsavel: '',
+    Observacoes: '',
+    avaliacao_prazo: 0,
+    avaliacao_entrega: 0,
+    avaliacao_contato: 0
+  });
+  useEffect(() => {
+    api.get(`fornecedores/${id}`, config).then(response => {
+      setWhatsapp(response.data.wpp);
+      setFornecedor({
+        RazaoSocial: response.data.razaoSocial,
+        NomeFantasia: response.data.nomeFantasia, 
+        Cnpj: response.data.cnpj,
+        Endereco: response.data.endereco,
+        Cidade: response.data.cidade,
+        Uf: response.data.estado,
+        TelefoneFixo: response.data.telefoneFixo,
+        Email: response.data.email,
+        Celular: response.data.cel,
+        Responsavel: response.data.nomeResponsavel,
+        Observacoes: response.data.obsOpen,
+        avaliacao_prazo: response.data.avaliacaoPrazo,
+        avaliacao_entrega: response.data.avaliacaoEntrega,
+        avaliacao_contato: response.data.avaliacaoContato
+      })
+    });
+  }, [id]);
 
-  function onSubmit(values : any) {
-    alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
-    navigateTo('/colic/fornecedores');
+  async function onSubmit(values) {
+    await api.put(`fornecedores/${id}`, 
+      {
+        id: parseInt(id),
+        razaoSocial: values.RazaoSocial,
+        nomeFantasia: values.NomeFantasia, 
+        cnpj: values.Cnpj,
+        endereco: values.Endereco,
+        cidade: values.Cidade,
+        estado: values.Uf,
+        telefoneFixo: values.TelefoneFixo,
+        email: values.Email,
+        cel: values.Celular,
+        nomeResponsavel: values.Responsavel,
+        wpp: whatsapp,
+        obsOpen: values.Observacoes,
+        avaliacaoPrazo: values.avaliacao_prazo,
+        avaliacaoEntrega: values.avaliacao_entrega,
+        avaliacaoContato: values.avaliacao_contato,
+      }, config)
+      .then(function () {
+        alert(values.NomeFantasia+' Editado Com Sucesso!');
+        navigateTo('/colic/fornecedores');
+      })
+      .catch(function (error) {console.log(error.response)
+        let msgError = '';
+        for (var index = 0; index < error.response.data.length; index++) {
+          msgError = msgError+error.response.data[index].message+'\n';
+        }
+        alert(msgError);
+      });
   }
-
-
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -40,27 +91,16 @@ function EditarFornecedor(){
         <Formik
           validationSchema={Schema}
           onSubmit={onSubmit}
-          initialValues={{
-            NomeFantasia: '', 
-            CNPJ: '',
-            TelefoneFixo: '',
-            email: '',
-            Endereco: '',
-            RazaoSocial: '',
-            responsavel: '',
-            Celular: '',
-            endereco: '',
-            cidade: '',
-            uf: 'UF'
-          }}
+          initialValues={fornecedor}
+          enableReinitialize
         >
-          {({errors,touched}) => {
+          {({errors,touched,values}) => {
             return(
               <Form
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>CADASTRO DE FORNECEDORES</h1>
+                  <h1>Editar  {fornecedor.NomeFantasia}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
@@ -70,29 +110,33 @@ function EditarFornecedor(){
                       type="text"
                       name='NomeFantasia'
                     />
-                    <label>CNPJ</label>
+                    <label>Cnpj</label>
                     <Field
-                      className={errors.CNPJ && touched.CNPJ ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Cnpj && touched.Cnpj ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='CNPJ' 
+                      name='Cnpj'
+                      value={masker(unMask(values.Cnpj),["99.999.999/9999-99"])}
+                      maxLength={18} 
                     />
-                    <label>Telefone Fixo</label>
+                    <label>TelefoneFixo Fixo</label>
                     <Field
                       className={errors.TelefoneFixo && touched.TelefoneFixo ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
                       name='TelefoneFixo'
+                      maxLength = {15}
+                      value={masker(unMask(values.TelefoneFixo),["(99) 9999-9999" , "(99)9 9999-9999"])} 
                     />
                     <label>E-mail</label>
                     <Field
-                      className={errors.email && touched.email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Email && touched.Email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='email' 
+                      name='Email' 
                     />
                     <label>Endereço</label>
                     <Field
-                      className={errors.endereco && touched.endereco ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Endereco && touched.Endereco ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='endereco' 
+                      name='Endereco' 
                     />
                   </div>
                   <div className="form-elements-column">
@@ -104,9 +148,9 @@ function EditarFornecedor(){
                     />
                     <label>Nome do(a) responsável</label>
                     <Field
-                      className={errors.responsavel && touched.responsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.Responsavel && touched.Responsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='responsavel' 
+                      name='Responsavel' 
                     />
                     
                     <div className='sap-form-container-input-row'>
@@ -116,6 +160,8 @@ function EditarFornecedor(){
                             className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                             type="text"
                             name='Celular'
+                            maxLength = {15}
+                            value={masker(unMask(values.Celular),["(99) 9999-9999" , "(99)9 9999-9999"])} 
                             />
                         </div>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
@@ -128,7 +174,6 @@ function EditarFornecedor(){
                             >
                               Sim
                             </button>
-
                             <button 
                               type="button"
                               className={!whatsapp ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
@@ -136,30 +181,28 @@ function EditarFornecedor(){
                             >
                               Não
                             </button>
-
                           </div>
                         </div>
                     </div>
                     <div className="sap-form-container-input-row">
-
                     </div>
                     <div className='sap-form-container-input-row'>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
-                          <label htmlFor='cidade'>Cidade</label>
+                          <label htmlFor='Cidade'>Cidade</label>
                             <Field
-                            className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                            className={errors.Cidade && touched.Cidade ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                             type="text"
-                            name='cidade'
+                            name='Cidade'
                             />
                         </div>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
-                          <label>Estado</label>
+                          <label>Uf</label>
                           <div className="sap-form-button-select">
                           <Field
                             className='sap-form-select' 
-                            name="uf" 
+                            name="Uf" 
                             as="select">
-                            <option value="UF">UF</option>
+                            <option value="Uf">Uf</option>
                             <option value="AC">AC</option>
                             <option value="AL">AL</option>
                             <option value="AP">AP</option>
@@ -188,13 +231,19 @@ function EditarFornecedor(){
                             <option value="TO">TO</option>
                             <option value="DF">DF</option>
                           </Field>
-
                           </div>
                         </div>
                     </div>
                     
                   </div>
                 </div>
+                <label>Observações</label>
+                    <Field
+                      as='textarea'
+                      className={errors.Observacoes && touched.Observacoes ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
+                      type="textarea"
+                      name='Observacoes'
+                    />
                 <div className="form-footer">
                   <button 
                     type='submit' 

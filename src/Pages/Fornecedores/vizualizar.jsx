@@ -1,152 +1,160 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Formik, Field, Form} from 'formik';
-import { useNavigate } from 'react-router-dom';
-import { mask as masker, unMask } from "remask";
+import { useNavigate , useParams, Link } from 'react-router-dom';
+import {RiEditBoxFill} from 'react-icons/ri';
 
-import NavbarMenu from '../../Components/Navbar/Navbar';
+import NavbarMenu from '../../Components/Navbar/Navbar';;
 import {api, Config} from '../../Services/api';
-import Schema from '../../Utils/ShemaFornecedores';
 
 import '../../Styles/form.css';
 
-function CadastrarFornecedor(){
+function VizualizarFornecedor(){
   const navigateTo = useNavigate();
+  const {id} = useParams();
   const [whatsapp, setWhatsapp] = useState(false);
-  const config = Config(); 
-  function onSubmit(values) {
-    const bodyParameters = {
-      razaoSocial: values.RazaoSocial,
-      nomeFantasia: values.NomeFantasia,
-      cnpj: values.Cnpj,
-      endereco: values.Endereco,
-      cidade: values.Cidade,
-      estado: values.Uf,
-      telefoneFixo: values.TelefoneFixo,
-      email: values.Email,
-      cel: values.Celular,
-      nomeResponsavel: values.Responsavel,
-      wpp: whatsapp,
-      obsOpen:values.Observacoes,
-      avaliacaoPrazo: 0,
-      avaliacaoEntrega: 0,
-      avaliacaoContato: 0,
-    };
-      api.post('fornecedores',bodyParameters, config).then(function (response) {
-        alert(values.NomeFantasia+' Cadastrado Com Sucesso!');
-        navigateTo('/colic/fornecedores');
-      }).catch(function (error) {
-        let msgError = '';
-        for (var index = 0; index < error.response.data.length; index++) {
-          msgError = msgError+error.response.data[index].message+'\n';
-        }
-        alert(msgError);
-      });
-    
-  }
+  const config = Config();
+  const [fornecedor, setFornecedor] = useState({
+    RazaoSocial: '',
+    NomeFantasia: '', 
+    Cnpj: '',
+    Endereco: '',
+    Cidade: '',
+    Uf: '',
+    TelefoneFixo: '',
+    Email: '',
+    Celular: '',
+    Responsavel: '',
+    Observacoes: '',
+    avaliacao_prazo: 0,
+    avaliacao_entrega: 0,
+    avaliacao_contato: 0
+  });
+  useEffect(() => {
+    api.get(`fornecedores/${id}`, config).then(response => {
+      setWhatsapp(response.data.wpp);
+      setFornecedor({
+        RazaoSocial: response.data.razaoSocial,
+        NomeFantasia: response.data.nomeFantasia, 
+        Cnpj: response.data.cnpj,
+        Endereco: response.data.endereco,
+        Cidade: response.data.cidade,
+        Uf: response.data.estado,
+        TelefoneFixo: response.data.telefoneFixo,
+        Email: response.data.email,
+        Celular: response.data.cel,
+        Responsavel: response.data.nomeResponsavel,
+        Observacoes: response.data.obsOpen,
+        avaliacao_prazo: response.data.avaliacaoPrazo,
+        avaliacao_entrega: response.data.avaliacaoEntrega,
+        avaliacao_contato: response.data.avaliacaoContato
+      })
+    });
+  }, [id]);
   return (
     <div className="sap-container">
       <NavbarMenu />
       <div className='sap-container-page'>
         <Formik
-          validationSchema={Schema}
-          onSubmit={onSubmit}
-          initialValues={{
-            RazaoSocial: '',
-            NomeFantasia: '', 
-            Cnpj: '',
-            Endereco: '',
-            Cidade: '',
-            Uf: 'UF',
-            TelefoneFixo: '',
-            Email: '',
-            Celular: '',
-            Responsavel: '',
-            Observacoes: '',
-          }}
+          initialValues={fornecedor}
+          enableReinitialize
         >
-          {({errors,touched,values}) => {
+          {() => {
             return(
               <Form
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>CADASTRO DE FORNECEDORES</h1>
+                  <h1>
+                    {fornecedor.NomeFantasia}
+                    <Link className='' to={'/colic/editar/fornecedor/'+id}>
+                      <RiEditBoxFill 
+                        size={25} 
+                        color="#09210E"
+                        className="sap-form-icon-title"
+                      />
+                    </Link>
+                    </h1>
+                    <div className="clear"></div>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
                     <label>Nome Fantasia</label>
                     <Field
-                      className={errors.NomeFantasia && touched.NomeFantasia ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
                       name='NomeFantasia'
+                      disabled
                     />
                     <label>Cnpj</label>
                     <Field
-                      className={errors.Cnpj && touched.Cnpj ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
                       name='Cnpj'
-                      maxLength = {18}
-                      value={masker(unMask(values.Cnpj),["99.999.999/9999-99"])} 
+                      disabled 
                     />
-                    <label>Telefone Fixo</label>
+                    <label>TelefoneFixo Fixo</label>
                     <Field
-                      className={errors.TelefoneFixo && touched.TelefoneFixo ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
                       name='TelefoneFixo'
-                      maxLength = {15}
-                      value={masker(unMask(values.TelefoneFixo),["(99) 9999-9999" , "(99)9 9999-9999"])} 
+                      disabled
                     />
                     <label>E-mail</label>
                     <Field
-                      className={errors.Email && touched.Email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
                       name='Email' 
+                      disabled
                     />
                     <label>Endereço</label>
                     <Field
-                      className={errors.Endereco && touched.Endereco ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
-                      name='Endereco' 
+                      name='Endereco'
+                      disabled 
                     />
                   </div>
                   <div className="form-elements-column">
                     <label>Razão Social</label>
                     <Field
-                      className={errors.RazaoSocial && touched.RazaoSocial ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
-                      name='RazaoSocial' 
+                      name='RazaoSocial'
+                      disabled 
                     />
                     <label>Nome do(a) responsável</label>
                     <Field
-                      className={errors.Responsavel && touched.Responsavel ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
-                      name='Responsavel' 
+                      name='Responsavel'
+                      disabled 
                     />
                     
                     <div className='sap-form-container-input-row'>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
                           <label htmlFor='Celular'>Celular</label>
                             <Field
-                            className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                            className="form-input form-input-w100 sap-form-input-disabled"
                             type="text"
                             name='Celular'
-                            maxLength = {15}
-                            value={masker(unMask(values.Celular),["(99) 9999-9999","(99)9 9999-9999"])} 
+                            disabled
                             />
                         </div>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
                           <label>Whatsapp</label>
                           <div className="sap-form-button-select">
                             <button 
-                              type="button" 
-                              className={whatsapp ? 'sap-form-button sap-form-button-active sap-form-button-active-green' : 'sap-form-button'}
+                              type="button"
+                              disabled 
+                              className={whatsapp ? 'sap-form-button sap-form-button-active sap-form-button-active-green' : 'sap-form-button sap-form-input-disabled'}
                               onClick={() => setWhatsapp(true)}
                             >
                               Sim
                             </button>
                             <button 
                               type="button"
-                              className={!whatsapp ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
+                              disabled
+                              className={!whatsapp ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button sap-form-input-disabled'}
                               onClick={() => setWhatsapp(false)}
                             >
                               Não
@@ -158,21 +166,23 @@ function CadastrarFornecedor(){
                     </div>
                     <div className='sap-form-container-input-row'>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
-                          <label htmlFor='cidade'>Cidade</label>
+                          <label htmlFor='Cidade'>Cidade</label>
                             <Field
-                            className={errors.Cidade && touched.Cidade ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                            className="form-input form-input-w100 sap-form-input-disabled"
                             type="text"
                             name='Cidade'
+                            disabled
                             />
                         </div>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
-                          <label>Estado</label>
+                          <label>Uf</label>
                           <div className="sap-form-button-select">
                           <Field
-                            className={errors.Uf && touched.Uf ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                            name="Uf" 
+                            className='sap-form-select sap-form-input-disabled' 
+                            name="Uf"
+                            disabled 
                             as="select">
-                            <option value="UF">UF</option>
+                            <option value="Uf">Uf</option>
                             <option value="AC">AC</option>
                             <option value="AL">AL</option>
                             <option value="AP">AP</option>
@@ -210,18 +220,11 @@ function CadastrarFornecedor(){
                 <label>Observações</label>
                     <Field
                       as='textarea'
-                      className={errors.Observacoes && touched.Observacoes ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
+                      className="form-input-textarea form-input form-input-w100 sap-form-input-disabled"
                       type="textarea"
                       name='Observacoes'
+                      disabled
                     />
-                <div className="form-footer">
-                  <button 
-                    type='submit' 
-                    className="form-btn">
-                      Cadastrar
-                  </button>
-                  <div className="clear"></div>
-                </div>
               </Form>
           )}
           }
@@ -231,4 +234,4 @@ function CadastrarFornecedor(){
   );
 }
 
-export default CadastrarFornecedor;
+export default VizualizarFornecedor;

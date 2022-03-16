@@ -16,6 +16,10 @@ function Menu() {
     setMenu(!menu);
   }
 
+  function setarToken() {
+    setToken(null);
+  }
+  
   return (
     <div className="container-menu">
       <div 
@@ -77,7 +81,7 @@ function Menu() {
             <RiEditBoxFill size={21} color="white"/>
           </div>
 
-          <div className='menu-container-user-icon' onClick={() => setToken(null)}>
+          <div className='menu-container-user-icon' onClick={() => setarToken()}>
             <IoExit size={21} color="white"/>
           </div>
         </div>

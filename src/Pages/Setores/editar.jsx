@@ -3,33 +3,52 @@ import {Formik, Field, Form} from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import Schema from '../../Utils/Shema';
+import Schema from '../../Utils/ShemaSetor';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
-
-interface Setor {
-    id: number;
-    name: string;
-    sigla: string;
-    email: string;
-    ramal: string;
-  }
 
 function EditarSetor(){
   const navigateTo = useNavigate();
   const {id} = useParams();
-  const [setor,setSetor] = useState<Setor>(
-    {id: 0,name: 'Coordenação de Laboratórios ', sigla: 'COLAB', ramal:'216',email: 'colab.ire@ifba.edu.br'},
+  const config = Config();
+  const [setor,setSetor] = useState({
+    NomeSetor: '', 
+    SiglaSetor: '', 
+    RamalSetor:'',
+    EmailSetor: ''
+  },
   );
-  function onSubmit(values: any) {
-    if (window.confirm("Editar "+setor.sigla+" ?")) {
-      alert(values.name+' Editado Com Sucesso!');
+  useEffect(() => {
+    api.get(`setores/${id}`, config).then(response => {
+      setSetor({
+        NomeSetor: response.data.nome,
+        SiglaSetor: response.data.sigla, 
+        RamalSetor: response.data.ramal,
+        EmailSetor: response.data.email,
+      })
+    });
+  }, [id]);
+  async function onSubmit(values) {
+    await api.put(`setores/${id}`, {
+      id: parseInt(id),
+      nome: values.NomeSetor,
+      sigla: values.SiglaSetor, 
+      ramal: values.RamalSetor,
+      email: values.EmailSetor,
+    }, config)
+    .then(function () {
+      alert(values.NomeSetor+' Editado Com Sucesso!');
       navigateTo('/colic/setores');
-    }
-    
+    })
+    .catch(function (error) {console.log(error.response)
+      let msgError = '';
+      for (var index = 0; index < error.response.data.length; index++) {
+        msgError = msgError+error.response.data[index].message+'\n';
+      }
+      alert(msgError);
+    });
   }
-
-
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -37,20 +56,16 @@ function EditarSetor(){
         <Formik
           validationSchema={Schema}
           onSubmit={onSubmit}
-          initialValues={{
-            name: setor.name, 
-            ramal: setor.ramal,
-            sigla: setor.sigla,
-            email: setor.email,
-          }}
+          initialValues={setor}
+          enableReinitialize
         >
-          {({errors,touched}) => {
+          {({errors,touched,values}) => {
             return(
               <Form
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>EDITAR SETOR</h1>
+                  <h1>Editar {values.NomeSetor}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
@@ -58,13 +73,13 @@ function EditarSetor(){
                     <Field
                       className={errors.name && touched.name ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
                       type="text"
-                      name='name'
+                      name='NomeSetor'
                     />
                     <label>Ramal</label>
                     <Field
                       className={errors.ramal && touched.ramal ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='ramal' 
+                      name='RamalSetor' 
                     />
                   </div>
                   <div className="form-elements-column">
@@ -72,13 +87,13 @@ function EditarSetor(){
                     <Field
                       className={errors.sigla && touched.sigla ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='sigla'
+                      name='SiglaSetor'
                     />
                     <label>E-mail</label>
                     <Field
                       className={errors.email && touched.email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='email' 
+                      name='EmailSetor' 
                     />
                   </div>
                 </div>
@@ -86,7 +101,7 @@ function EditarSetor(){
                   <button 
                     type='submit' 
                     className="form-btn">
-                      Editar
+                      Cadastrar
                   </button>
                   <div className="clear"></div>
                 </div>

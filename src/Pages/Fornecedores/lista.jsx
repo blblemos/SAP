@@ -1,4 +1,4 @@
-import { useState , useEffect,useContext } from 'react';
+import { useState , useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -8,26 +8,24 @@ import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 import {BsStarFill, BsStar} from 'react-icons/bs';
 
-import api from '../../Services/api';
-import StoreContext from '../../Components/Store/Context';
+import {api, Config, SetarTokenNull} from '../../Services/api';
 
 import '../../Styles/table.css';
 
 const { SearchBar } = Search;
 
 function ListaFornecedor(){
-  const [setores,setSetores] = useState([]);
-  const { token } = useContext(StoreContext);
-  const config = {
-    headers: { Authorization: token }
-  };
-
+  const [fornecedores,setFornecedores] = useState([]);
+  const config = Config();
   useEffect(() => {
     api.get('fornecedores', config).then(response => {
-      setSetores(response.data); console.log(response.data); 
+      setFornecedores(response.data); 
+    }).catch(function(error){
+      if (error.response.status = 403) {
+        SetarTokenNull();
+      }
     })
-}, []);
-
+  }, []); 
     const columns = [
       {
         dataField: 'razaoSocial',
@@ -85,14 +83,13 @@ function ListaFornecedor(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-            <Link className='sap-table-link-icon' to={'/colic/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/vizualizar/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),
       }
     ];
-
     const pageButtonRenderer = ({
       page,
       active,
@@ -136,7 +133,7 @@ function ListaFornecedor(){
             <div className='table-table'>
               <ToolkitProvider
                 keyField ='id'
-                data={setores}
+                data={fornecedores}
                 columns={columns}
                 search
               >
