@@ -7,7 +7,7 @@ import HomeColic from './Pages/Home-Colic/home-colic';
 import ListaSetor from './Pages/Setores/lista';
 import CadastrarSetor from './Pages/Setores/cadastro';
 import EditarSetor from './Pages/Setores/editar';
-import Setor from './Pages/Setores/setor';
+import VizualizarSetor from './Pages/Setores/vizualizar';
 import ListaAquisicoes from './Pages/Aquisicoes/ListaAquisicoes';
 import CadastrarAquisicao from './Pages/Aquisicoes/NovaAquisicao';
 import CadastrarFornecedor from './Pages/Fornecedores/cadastro';
@@ -28,9 +28,9 @@ function Rotas() {
             <Route path="/colic/cadastraraquisicao" element={<CadastrarAquisicao/>} />
             <Route path="/colic/aquisicoes" element={<ListaAquisicoes/>} />
             <Route path="/colic/setores" element={<ListaSetor/>} />
-            <Route path="/colic/editarsetor/:id" element={<EditarSetor/>} />
+            <Route path="/colic/editar/setor/:id" element={<EditarSetor/>} />
             <Route path="/colic/cadastrarsetor" element={<CadastrarSetor/>} />
-            <Route path="/colic/setor/:id" element={<Setor/>} />
+            <Route path="/colic/setor/:id" element={<VizualizarSetor/>} />
             <Route path="/colic/cadastrar/fornecedor" element={<CadastrarFornecedor/>} />
             <Route path="/colic/editar/fornecedor/:id" element={<EditarFornecedor/>} />
             <Route path="/colic/vizualizar/fornecedor/:id" element={<VizualizarFornecedor/>} />

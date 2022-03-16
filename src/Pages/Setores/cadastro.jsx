@@ -2,19 +2,32 @@ import {Formik, Field, Form} from 'formik';
 import { useNavigate } from 'react-router-dom';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import Schema from '../../Utils/Shema';
+import Schema from '../../Utils/ShemaSetor';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
 
 function CadastrarSetor(){
   const navigateTo = useNavigate();
-
-  function onSubmit(values: any) {
-    alert(values.name+' Cadastrado Com Sucesso!');
-    navigateTo('/colic/setores');
+  const config = Config();
+  function onSubmit(values) { 
+    const bodyParameters ={
+      nome: values.NomeSetor,
+      sigla: values.SiglaSetor,
+      ramal: values.RamalSetor,
+      email: values.EmailSetor,
+    }
+    api.post('setores', bodyParameters, config).then(function (response) { 
+      alert(values.NomeSetor+' Cadastrado Com Sucesso!');
+      navigateTo('/colic/setores');
+    }).catch(function (error) {
+      let msgError = '';
+        for (var index = 0; index < error.response.data.length; index++) {
+          msgError = msgError+error.response.data[index].message+'\n';
+        }
+        alert(msgError);
+    })
   }
-
-
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -23,13 +36,13 @@ function CadastrarSetor(){
           validationSchema={Schema}
           onSubmit={onSubmit}
           initialValues={{
-            name: '', 
-            ramal: '',
-            sigla: '',
-            email: '',
+            NomeSetor: '', 
+            SiglaSetor: '',
+            RamalSetor: '',
+            EmailSetor: '',
           }}
         >
-          {({errors,touched}) => {
+          {({errors,touched,values}) => {
             return(
               <Form
                 className="sap-form-container"
@@ -41,29 +54,30 @@ function CadastrarSetor(){
                   <div className="form-elements-column">
                     <label>Nome</label>
                     <Field
-                      className={errors.name && touched.name ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
+                      className={errors.NomeSetor && touched.NomeSetor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
                       type="text"
-                      name='name'
+                      name='NomeSetor'
                     />
                     <label>Ramal</label>
                     <Field
-                      className={errors.ramal && touched.ramal ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
-                      type="text"
-                      name='ramal' 
+                      className={errors.RamalSetor && touched.RamalSetor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      type="number"
+                      name='RamalSetor'
+                      maxLength = {15}  
                     />
                   </div>
                   <div className="form-elements-column">
                     <label>Sigla</label>
                     <Field
-                      className={errors.sigla && touched.sigla ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.SiglaSetor && touched.SiglaSetor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='sigla'
+                      name='SiglaSetor'
                     />
                     <label>E-mail</label>
                     <Field
-                      className={errors.email && touched.email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.EmailSetor && touched.EmailSetor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='email' 
+                      name='EmailSetor' 
                     />
                   </div>
                 </div>
