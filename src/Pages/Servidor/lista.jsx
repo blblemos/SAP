@@ -7,33 +7,33 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 
-import api from '../../Services/api';
-import axios from 'axios';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/table.css';
 
 const { SearchBar } = Search;
 
 function ListaServidor(){
-  const [setores,setSetores] = useState([]);
-
+  const [servidores,setServidores] = useState([]);
+  const config = Config(); let teste =[]
   useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
-      setSetores(response.data);
+    api.get('servidores', config).then(response => {
+      setServidores(response.data);
+    }).catch(function(error){
+      alert(error.message);
     })
-}, []);
-
+  }, []);
     const columns = [
       {
-        dataField: 'userId',
+        dataField: 'nome',
         text: 'NOME'
       },
       {
-        dataField: 'title',
+        dataField: 'celular',
         text: 'CARGO'
       },
       {
-        dataField: 'userId',
+        dataField: 'setor.sigla',
         text: 'SETOR',
       },
       {
@@ -41,14 +41,13 @@ function ListaServidor(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-            <Link className='sap-table-link-icon' to={'/colic/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/editar/servidor'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/servidor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),
       }
     ];
-
     const pageButtonRenderer = ({
       page,
       active,
@@ -92,7 +91,7 @@ function ListaServidor(){
             <div className='table-table'>
               <ToolkitProvider
                 keyField ='id'
-                data={setores}
+                data={servidores}
                 columns={columns}
                 search
               >
