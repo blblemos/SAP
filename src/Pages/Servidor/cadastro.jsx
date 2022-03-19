@@ -1,22 +1,51 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { mask as masker, unMask } from "remask";
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import Schema from '../../Utils/Shema';
+import Schema from '../../Utils/ShemaServidor';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
 
 function CadastrarServidor(){
   const navigateTo = useNavigate();
-  const [colic, setColic] = useState(false); 
-
-  function onSubmit(values) {
-    alert(values.nome+' Cadastrado Com Sucesso!');
-    navigateTo('/colic/setores');
+  const config = Config();
+  const [colic, setColic] = useState(false);
+  const [setor,setSetor] = useState([]);
+  const [user,setUser] = useState({
+    UserName: '',
+    UserPassword: '',
+  },
+  );  
+  useEffect(() => {
+    api.get(`setores`, config).then(response => {
+      setSetor(response.data);
+    })
+  }, []);
+  function onSubmit(values) { console.log(values.SetorServidor); 
+    const bodyParameters = {
+      nome: values.NomeServidor,
+      colic: colic,
+      email: values.EmailServidor,
+      celular: values.CelularServidor,
+      foto: '1',
+      setor: {
+        id: values.SetorServidor
+      }
+    };
+      api.post('servidores',bodyParameters, config).then(function (response) {
+        alert(values.NomeServidor+' Cadastrado Com Sucesso!');
+        navigateTo('/colic/servidores');
+      }).catch(function (error) {
+        let msgError = '';
+        for (var index = 0; index < error.response.data.length; index++) {
+          msgError = msgError+error.response.data[index].message+'\n';
+        }
+        alert(msgError);
+      });
   }
-
-
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -25,14 +54,15 @@ function CadastrarServidor(){
           validationSchema={Schema}
           onSubmit={onSubmit}
           initialValues={{
-            nome: '', 
-            cargo: '',
-            email: '',
-            setor: 'vazio',
-            celular: ''
+            NomeServidor: '',  
+            EmailServidor:'',
+            CelularServidor: '',
+            FotoServidor: '',
+            SetorServidor: 0,
+            CargoServidor: '',
           }}
         >
-          {({errors,touched}) => {
+          {({errors,touched,values}) => {
             return(
               <Form
                 className="sap-form-container"
@@ -44,21 +74,21 @@ function CadastrarServidor(){
                   <div className="form-elements-column">
                     <label>Nome</label>
                     <Field
-                      className={errors.nome && touched.nome ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
+                      className={errors.NomeServidor && touched.NomeServidor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
                       type="text"
-                      name='nome'
+                      name='NomeServidor'
                     />
                     <label>Cargo</label>
                     <Field
-                      className={errors.cargo && touched.cargo ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.CargoServidor && touched.CargoServidor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='cargo' 
+                      name='CargoServidor' 
                     />
                     <label>E-mail</label>
                     <Field
-                      className={errors.email && touched.email ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.EmailServidor && touched.EmailServidor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='email' 
+                      name='EmailServidor' 
                     />
                   </div>
                   <div className="form-elements-column">
@@ -73,7 +103,6 @@ function CadastrarServidor(){
                             >
                               Sim
                             </button>
-
                             <button 
                               type="button"
                               className={!colic ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
@@ -81,29 +110,32 @@ function CadastrarServidor(){
                             >
                               Não
                             </button>
-
                           </div>
                         </div>
                     </div>
                       <label>Setor</label>
                       <div className="sap-form-button-select sap-form-button-select-margin-bot">
                       <Field
-                        className='sap-form-select' 
-                        name="setor" 
+                        className={errors.SetorServidor && touched.SetorServidor ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
+                        name="SetorServidor" 
                         as="select">
-                        <option value="vazio"></option>
-                        <option value="colic">COLIC</option>
-                        <option value="depad">DEPAD</option>
-                        <option value="COLAB">COLAB</option>
+                        <option value="null"></option>
+                        {setor.map(setores => {
+                          return (
+                            <option value={setores.id}>{setores.sigla}</option>
+                          )
+                        })
+                        }
                       </Field>
                       </div>
                       <label>Celular</label>
                       <Field
-                        className={errors.celular && touched.celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                        className={errors.CelularServidor && touched.CelularServidor ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                         type="text"
-                        name='celular' 
+                        name='CelularServidor' 
+                        maxLength = {15}
+                        value={masker(unMask(values.CelularServidor),["(99) 9999-9999","(99)9 9999-9999"])}
                       />
-                      
                   </div>
                 </div>
                 <div className="form-footer">

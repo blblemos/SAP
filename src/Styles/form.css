@@ -2,7 +2,6 @@
   width: 80%;
   margin: 150px auto;
   position: relative;
-
   
 }
 
@@ -10,10 +9,16 @@
   margin-bottom: 60px;
 }
 
+.sap-form-icon-title{
+  float: right;
+}
+
 .form-title h1{
   font-size: 24px;
   font-weight: 900;
   color: #09210E;
+  justify-content: space-between;
+  width: 100%; 
 
   padding-bottom: 5px;
 
@@ -64,7 +69,12 @@
   width: 100%;
 }
 
-.form-elements-column label {
+.form-input-textarea{
+  padding: 5px 5px;
+  height: 150px;
+}
+
+label {
   font-size: 18px;
   font-weight: 900;
   color: #09210E;
@@ -88,7 +98,7 @@
 
   border: none;
 
-  color: white;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 900;
 
@@ -102,8 +112,8 @@
 }
 
 .sap-form-input-disabled {
-  background-color: #09210E;
-  color: white;
+  background-color: #09210E !important;
+  color: #ffffff !important;
 }
 
 .sap-form-container-input-row{
@@ -178,10 +188,24 @@
   background-color: white;
 }
 
+.sap-form-select-error{
+  border: 3px solid #CE1218!important;
+}
+
 select {
   background-color: #CE1218;
 }
 
 .sap-form-button-select-margin-bot {
   margin-bottom: 40px;
+}
+
+input[type=number]::-webkit-inner-spin-button { 
+  -webkit-appearance: none;
+  
+}
+input[type=number] { 
+  -moz-appearance: textfield;
+  appearance: textfield;
+
 }
