@@ -29,7 +29,7 @@ function ListaServidor(){
         text: 'NOME'
       },
       {
-        dataField: 'celular',
+        dataField: 'cargo',
         text: 'CARGO'
       },
       {
@@ -41,7 +41,7 @@ function ListaServidor(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/editar/servidor'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/editar/servidor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
             <Link className='sap-table-link-icon' to={'/colic/servidor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
