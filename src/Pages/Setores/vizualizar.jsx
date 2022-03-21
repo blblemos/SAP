@@ -9,7 +9,6 @@ import {api, Config} from '../../Services/api';
 import '../../Styles/form.css';
 
 function VizualizarSetor(){
-  const navigateTo = useNavigate();
   const {id} = useParams();
   const config = Config();
   const [setor,setSetor] = useState({
