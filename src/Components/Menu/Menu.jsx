@@ -37,7 +37,7 @@ function Menu() {
           className="menu-close"
           onClick={() => stateMenu()} 
         >
-          <CgCloseO size={40} color="white"/>
+          <CgCloseO size={30} color="white"/>
         </div>
         
         <div className="menu-container-itens">

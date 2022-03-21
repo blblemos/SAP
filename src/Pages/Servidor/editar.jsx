@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Formik, Field, Form} from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { mask as masker, unMask } from "remask";
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
@@ -9,7 +9,8 @@ import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
 
-function CadastrarServidor(){
+function EditarServidor(){
+  const {id} = useParams();
   const navigateTo = useNavigate();
   const config = Config();
   const [colic, setColic] = useState(false);
@@ -18,14 +19,34 @@ function CadastrarServidor(){
     UserName: '',
     UserPassword: '',
   },
-  );  
+  );
+  const [servidor,setServidor] = useState({
+    NomeServidor: '',  
+    EmailServidor:'',
+    CelularServidor: '',
+    FotoServidor: '',
+    SetorServidor: 0,
+    CargoServidor: '',
+  });  
   useEffect(() => {
     api.get(`setores`, config).then(response => {
       setSetor(response.data);
-    })
+    });
+    api.get(`servidores/${id}`, config).then(response => {
+      setServidor({
+        NomeServidor: response.data.nome,  
+        EmailServidor: response.data.email,
+        CelularServidor: response.data.celular,
+        FotoServidor: response.data.foto,
+        SetorServidor: response.data.setor.id,
+        CargoServidor: response.data.cargo,
+      });
+      setColic(response.data.colic);
+    });
   }, []);
-  function onSubmit(values) { console.log(values.SetorServidor); 
+  async function onSubmit(values) {
     const bodyParameters = {
+      id: id,
       nome: values.NomeServidor,
       colic: colic,
       email: values.EmailServidor,
@@ -36,8 +57,8 @@ function CadastrarServidor(){
         id: values.SetorServidor
       }
     };
-      api.post('servidores',bodyParameters, config).then(function (response) {
-        alert(values.NomeServidor+' Cadastrado Com Sucesso!');
+      await api.put(`servidores/${id}`,bodyParameters, config).then(function (response) {
+        alert(values.NomeServidor+' Editado Com Sucesso!');
         navigateTo('/colic/servidores');
       }).catch(function (error) {
         let msgError = '';
@@ -54,14 +75,8 @@ function CadastrarServidor(){
         <Formik
           validationSchema={Schema}
           onSubmit={onSubmit}
-          initialValues={{
-            NomeServidor: '',  
-            EmailServidor:'',
-            CelularServidor: '',
-            FotoServidor: '',
-            SetorServidor: 0,
-            CargoServidor: '',
-          }}
+          initialValues={servidor}
+          enableReinitialize
         >
           {({errors,touched,values}) => {
             return(
@@ -69,7 +84,7 @@ function CadastrarServidor(){
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>CADASTRO DE SERVIDOR</h1>
+                  <h1>EDITAR {servidor.NomeServidor}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
@@ -156,4 +171,4 @@ function CadastrarServidor(){
   );
 }
 
-export default CadastrarServidor;
+export default EditarServidor;

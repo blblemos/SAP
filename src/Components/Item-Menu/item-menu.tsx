@@ -16,7 +16,7 @@ interface item {
 }
 
 function ItemMenu({nome, itens}: props) {
-  const [menu,setMenu] = useState(true);
+  const [menu,setMenu] = useState(false);
 
   function stateMenu() {
     setMenu(!menu);
