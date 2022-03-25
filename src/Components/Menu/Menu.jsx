@@ -21,7 +21,7 @@ function Menu() {
   }
   
   return (
-    <div className="container-menu">
+    <div className="container-menu" style={menu ? { height: "auto"} : { height: "80px"}} >
       <div 
         className="img-open-menu"
         onClick={() => stateMenu()}
@@ -44,7 +44,7 @@ function Menu() {
           <ItemMenu
             nome='Aquisições'
             itens={[
-              {nomelink:'Nova Aquisição', link: '/colic/cadastraraquisicao'},
+              {nomelink:'Nova Aquisição', link: '/colic/cadastrar/aquisicao'},
               {nomelink:'Lista de Aquisições', link: '/colic/aquisicoes'}]}
           />
 
@@ -61,12 +61,17 @@ function Menu() {
               {nomelink:'Cadastrar Servidor', link: '/colic/cadastrar/servidor'},
               {nomelink:'Lista de Servidores', link: '/colic/servidores'}]}
           />
-
           <ItemMenu
             nome='Setores'
             itens={[
-              {nomelink:'Cadastrar Setores', link: '/colic/cadastrarsetor'},
+              {nomelink:'Cadastrar Setores', link: '/colic/cadastrar/setor'},
               {nomelink:'Lista de Setores', link: '/colic/setores'}]}
+          />
+          <ItemMenu
+            nome='Itens'
+            itens={[
+              {nomelink:'Cadastrar Itens', link: '/colic/cadastrar/item'},
+              {nomelink:'Lista de Itens', link: '/colic/itens'}]}
           />
         </div>
 
