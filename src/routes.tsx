@@ -18,6 +18,10 @@ import ListaServidor from './Pages/Servidor/lista';
 import Cadastrarservidor from './Pages/Servidor/cadastro';
 import EditarServidor from './Pages/Servidor/editar';
 import VizualizarServidor from './Pages/Servidor/vizualizar';
+import CadastrarItem from './Pages/Itens/cadastro';
+import EditarItem from './Pages/Itens/editar';
+import VizualizarItem from './Pages/Itens/vizualizar';
+import ListaItem from './Pages/Itens/lista';
 import SignUp from './Pages/Login/login';
 
 function Rotas() {
@@ -31,7 +35,7 @@ function Rotas() {
             <Route path="/colic/aquisicoes" element={<ListaAquisicoes/>} />
             <Route path="/colic/setores" element={<ListaSetor/>} />
             <Route path="/colic/editar/setor/:id" element={<EditarSetor/>} />
-            <Route path="/colic/cadastrarsetor" element={<CadastrarSetor/>} />
+            <Route path="/colic/cadastrar/setor" element={<CadastrarSetor/>} />
             <Route path="/colic/setor/:id" element={<VizualizarSetor/>} />
             <Route path="/colic/cadastrar/fornecedor" element={<CadastrarFornecedor/>} />
             <Route path="/colic/editar/fornecedor/:id" element={<EditarFornecedor/>} />
@@ -41,6 +45,10 @@ function Rotas() {
             <Route path="/colic/cadastrar/servidor" element={<Cadastrarservidor/>} />
             <Route path="/colic/editar/servidor/:id" element={<EditarServidor/>} />
             <Route path="/colic/servidor/:id" element={<VizualizarServidor/>} />
+            <Route path="/colic/cadastrar/item" element={<CadastrarItem/>} />
+            <Route path="/colic/editar/item/:id" element={<EditarItem/>} />
+            <Route path="/colic/item/:id" element={<VizualizarItem/>} />
+            <Route path="/colic/itens" element={<ListaItem/>} />
             <Route path="/" element={<HomeColic/>} />
           </Route>
           <Route path="/*" element={<NotFound/>} />
