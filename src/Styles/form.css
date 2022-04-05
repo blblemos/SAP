@@ -185,7 +185,7 @@ label {
   font-weight: 900;
   font-size: 18px;
   color: #2B9F3F;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
 }
 
 .sap-form-select-error{
@@ -204,8 +204,62 @@ input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   
 }
+
 input[type=number] { 
   -moz-appearance: textfield;
   appearance: textfield;
+}
 
+input[type=date]{
+  height: 66px; 
+  padding: 20px 10px
+}
+
+.form-div-input-link{
+  position: relative;
+}
+
+.form-icon-link{
+  position: absolute;
+  display: flex;
+  top: calc(50% - 20px);
+  right: 5px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.sap-container-modal{
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  z-index: 999;
+  position:fixed;
+  overflow-y:scroll;
+  overflow-x:hidden;
+}
+
+.sap-close-modal{
+  cursor: pointer;
+  position: absolute;
+  top: 5vh;
+  right: 5vw;
+  z-index: 999;
+}
+
+.sap-div-modal-mini{
+  display: flex;
+  position: absolute;
+  width: 80vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.sap-div-modal{
+  display: flex;
+  position: absolute;
+  width: 100vw;
 }

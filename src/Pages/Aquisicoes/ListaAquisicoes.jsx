@@ -4,44 +4,44 @@ import NavbarMenu from '../../Components/Navbar/Navbar';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 
-import api from '../../Services/api';
-import axios from 'axios';
+import {api, Config} from '../../Services/api';
 
 import '../../Styles/table.css';
 
 const { SearchBar } = Search;
 
 function ListaAquisicoes(){
-  const [setores,setSetores] = useState([]);
-
+  const [aquisicoes,setAquisicoes] = useState([]);
+  const config = Config();
   useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
-      setSetores(response.data);
+    api.get('aquisicoes', config).then(response => {
+      setAquisicoes(response.data); console.log(response.data);
+    }).catch(function(error){
+      alert(error.message);
     })
-}, []);
+  }, []);
 
     const columns = [
       {
-        dataField: 'userId',
-        text: 'AQUISIÇÃO'
+        dataField: 'numeroAquisicao',
+        text: 'AQUISIÇÃO',
       },
       {
-        dataField: 'title',
+        dataField: 'numeroProcesso',
         text: 'PROCESSO'
       },
       {
-        dataField: 'userId',
+        dataField: 'objeto',
         text: 'OBJETO',
       },
       {
-        dataField: 'userId',
+        dataField: 'valorTotal',
         text: 'VALOR',
       },
       {
-        dataField: 'userId',
+        dataField: 'status',
         text: 'STATUS',
       },
       {
@@ -49,7 +49,7 @@ function ListaAquisicoes(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),
@@ -99,7 +99,7 @@ function ListaAquisicoes(){
             <div className='table-table'>
               <ToolkitProvider
                 keyField ='id'
-                data={setores}
+                data={aquisicoes}
                 columns={columns}
                 search
               >

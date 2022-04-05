@@ -1,0 +1,53 @@
+.sap-form-container-noform {
+  width: 80%;
+  margin: 15px auto;
+  position: relative;
+  
+}
+
+.sap-container-div-with-menu-title{
+  margin-top: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+.sap-container-div-with-menu-title h1{
+  font-size: 1.5rem;
+}
+
+.sap-container-div-with-menu{
+  display: flex;
+  position: relative;
+}
+
+.sap-container-div-with-menu-w80{
+  display: flex;
+  width: 80%;
+  padding-top: 10px;
+}
+
+.sap-container-div-with-menu-w20{
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  padding: 20px; 
+}
+
+.sap-btn-menu-sidebar{
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #2B9F3F;
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.sap-btn-menu-sidebar span,
+.sap-btn-menu-sidebar .sap-btn-menu-sidebar-link {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+}
