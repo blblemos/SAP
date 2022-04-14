@@ -88,6 +88,21 @@
 
 .sap-table-link-icon{
   margin-right: 20px;
+  cursor: pointer;
+
+}
+
+
+.sap-table-link{
+  text-decoration: none;
+  color: #09210E !important;
+}
+
+.sap-div-table-link-icon{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
 }
 
 .page-item a{

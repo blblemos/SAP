@@ -1,32 +1,18 @@
 import {useState, useEffect} from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {Formik, Field, Form} from 'formik';
 import VMasker from "vanilla-masker";
 
 import {AiFillCloseCircle} from 'react-icons/ai';
 import {api, Config} from '../../Services/api';
 
-type props = {
-  onChangeModal: (link: string ) => void;
-}
-
-interface Fornecedores {
-  id: number;
-  razaoSocial: string
-  cnpj: string
-}
-
-interface Itens {
-  id: number;
-  nome: string
-  catmat: string
-}
-
-function AddEmpenho({onChangeModal} : props) {
+function AddEmpenho() {
+  const {id} = useParams();
+  const navigateTo = useNavigate();
   const [valorTotal, setValorTotal] = useState('');
-  let config = {};
-  config = Config();
-  const [fornecedores,setFornecedores] = useState<Fornecedores[]>([]);
-  const [itens,setItens] = useState<Itens[]>([]);
+  const config = Config();
+  const [fornecedores,setFornecedores] = useState([]);
+  const [itens,setItens] = useState([]);
   useEffect(() => {
     api.get(`fornecedores`, config).then(response => {
       setFornecedores(response.data);
@@ -35,7 +21,7 @@ function AddEmpenho({onChangeModal} : props) {
       setItens(response.data);
     })
   }, []);
-  function onChange(valor_total: string) {
+  function onChange(valor_total) {
     const valorT = VMasker.toMoney(valor_total, {
       precision: 2,
       separator: ",",
@@ -44,12 +30,38 @@ function AddEmpenho({onChangeModal} : props) {
     });
     setValorTotal(valorT);
   }
-  function onSubmit(values: {}){
-
+  function onSubmit(values){
+    const bodyParameters ={
+      numeroEmpenho: values.NumeroEmpenho,
+      /*dataEmissao: values.DataEmissao,*/
+      valorTotalNE: valorTotal,
+      tipoEmpenho: values.TipoEmpenho,
+      dataInclusao: values.DataInclusao,
+      dataEnvio: values.DataEnvio,
+      fornecedor: {
+        id: values.Fornecedor
+      },
+      item: {
+        id: values.Item
+      },
+      aquisicao: {
+        id: parseInt(id)
+      },
+    }
+    api.post('empenhos', bodyParameters, config).then(function () { 
+      alert(values.NumeroEmpenho+' Cadastrado Com Sucesso!');
+      navigateTo('/colic/aquisicoes/'+id)
+    }).catch(function (error) {
+      let msgError = '';
+        for (var index = 0; index < error.response.data.length; index++) {
+          msgError = msgError+error.response.data[index].message+'\n';
+        }
+        alert(msgError);
+    })
   }
   return (
     <div className="sap-container-modal">
-      <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => onChangeModal('')}/>
+      <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => navigateTo('/colic/aquisicoes/'+id)}/>
       <div className="sap-div-modal">
       <Formik
 
@@ -61,8 +73,8 @@ function AddEmpenho({onChangeModal} : props) {
             TipoEmpenho: '',
             DataInclusao: '',
             DataEnvio: '',
-            Fornecedor: '',
-            Item: ''
+            Fornecedor: 0,
+            Item: 0
           }}
           enableReinitialize
         >
