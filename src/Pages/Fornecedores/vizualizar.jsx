@@ -1,19 +1,22 @@
 import {useEffect, useState} from 'react';
 import {Formik, Field, Form} from 'formik';
-import { useNavigate , useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {RiEditBoxFill} from 'react-icons/ri';
+import {BsStarFill, BsStar} from 'react-icons/bs';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
+import AvaliarFornecedor from '../../Components/Avaliar-Fornecedor/avaliar-fornecedor';
 
 import {api, Config} from '../../Services/api';
 
 import '../../Styles/form.css';
 
 function VizualizarFornecedor(){
-  const navigateTo = useNavigate();
+  window.scrollTo(0, 0);
   const {id} = useParams();
   const [whatsapp, setWhatsapp] = useState(false);
   const config = Config();
+  const [modalAv, setModalAv] = useState(false);
   const [fornecedor, setFornecedor] = useState({
     RazaoSocial: '',
     NomeFantasia: '', 
@@ -28,8 +31,48 @@ function VizualizarFornecedor(){
     Observacoes: '',
     avaliacao_prazo: 0,
     avaliacao_entrega: 0,
-    avaliacao_contato: 0
+    avaliacao_contato: 0,
+    avaliacao: 0,
   });
+  let av;
+  switch (fornecedor.avaliacao) {
+    case 0:
+      av = 
+        <div className='form-title-av'>
+          <BsStar size={25} color="#09210E"/>
+          <BsStar size={25} color="#09210E"/>
+          <BsStar size={25} color="#09210E"/>
+        </div>
+    break
+    case 1:
+      av = 
+        <div className='form-title-av'>
+          <BsStarFill size={25} color="#09210E"/>
+          <BsStar size={25} color="#09210E"/>
+          <BsStar size={25} color="#09210E"/>
+        </div>
+    break
+    case 2:
+      av =
+        <div className='form-title-av'>
+          <BsStarFill size={25} color="#09210E"/>
+          <BsStarFill size={25} color="#09210E"/>
+          <BsStar size={25} color="#09210E"/>
+        </div>
+        break
+    case 3:
+      av =
+        <div className='form-title-av'>
+          <BsStarFill size={25} color="#09210E"/>
+          <BsStarFill size={25} color="#09210E"/>
+          <BsStarFill size={25} color="#09210E"/>
+        </div>
+      break      
+    default:
+      break;
+  }
+
+
   useEffect(() => {
     api.get(`fornecedores/${id}`, config).then(response => {
       setWhatsapp(response.data.wpp);
@@ -47,13 +90,21 @@ function VizualizarFornecedor(){
         Observacoes: response.data.obsOpen,
         avaliacao_prazo: response.data.avaliacaoPrazo,
         avaliacao_entrega: response.data.avaliacaoEntrega,
-        avaliacao_contato: response.data.avaliacaoContato
+        avaliacao_contato: response.data.avaliacaoContato,
+        avaliacao: response.data.avaliacao,
+        avaliacao: response.data.avaliacao
       })
     });
-  }, [id]);
+  }, []);
   return (
     <div className="sap-container">
       <NavbarMenu />
+      {modalAv &&
+        <AvaliarFornecedor
+          id={id}
+          onChangeModal={setModalAv}
+        />
+      };
       <div className='sap-container-page'>
         <Formik
           initialValues={fornecedor}
@@ -67,7 +118,8 @@ function VizualizarFornecedor(){
                 <div className="form-title">
                   <h1>
                     {fornecedor.NomeFantasia}
-                    <Link className='' to={'/colic/editar/fornecedor/'+id}>
+                    {av}
+                    <Link className='form-title-link-edit' to={'/colic/editar/fornecedor/'+id}>
                       <RiEditBoxFill 
                         size={25} 
                         color="#09210E"
@@ -79,13 +131,6 @@ function VizualizarFornecedor(){
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
-                    <label>Nome Fantasia</label>
-                    <Field
-                      className="form-input form-input-w100 sap-form-input-disabled"
-                      type="text"
-                      name='NomeFantasia'
-                      disabled
-                    />
                     <label>Cnpj</label>
                     <Field
                       className="form-input form-input-w100 sap-form-input-disabled"
@@ -163,8 +208,7 @@ function VizualizarFornecedor(){
                           </div>
                         </div>
                     </div>
-                    <div className="sap-form-container-input-row">
-                    </div>
+                    
                     <div className='sap-form-container-input-row'>
                         <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
                           <label htmlFor='Cidade'>Cidade</label>
@@ -219,13 +263,19 @@ function VizualizarFornecedor(){
                   </div>
                 </div>
                 <label>Observações</label>
-                    <Field
-                      as='textarea'
-                      className="form-input-textarea form-input form-input-w100 sap-form-input-disabled"
-                      type="textarea"
-                      name='Observacoes'
-                      disabled
-                    />
+                <Field
+                  as='textarea'
+                  className="form-input-textarea form-input form-input-w100 sap-form-input-disabled"
+                  type="textarea"
+                  name='Observacoes'
+                  disabled
+                />
+                <div className="form-footer">
+                  <div onClick={() => setModalAv(true)} className="div-form-btn form-btn">
+                    Avaliar
+                  </div>
+                  <div className="clear"></div>
+                </div>
               </Form>
           )}
           }

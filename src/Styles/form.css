@@ -17,12 +17,22 @@
   font-size: 24px;
   font-weight: 900;
   color: #09210E;
-  justify-content: space-between;
+  display: flex;
+  position: relative;
   width: 100%; 
 
   padding-bottom: 5px;
 
   border-bottom: 3px solid #09210E;;
+}
+
+.form-title-av{
+  position: absolute;
+  right: 0;
+}
+
+.form-title-link-edit{
+  margin-left: 20px!important;
 }
 
 .form-elements {
@@ -55,6 +65,11 @@
   font-weight: 700;
 
   padding: 30px 10px;
+}
+
+.form-input-a{
+  display: flex;
+  align-items: center;
 }
 
 .form-input:focus {
@@ -105,6 +120,12 @@ label {
   cursor: pointer;
 
   transition: 500ms;
+}
+
+.div-form-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-btn:hover {
