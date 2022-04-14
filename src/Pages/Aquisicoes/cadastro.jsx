@@ -57,11 +57,7 @@ function CadastrarAquisicao(){
         alert('Cadastrado Com Sucesso!');
         navigateTo('/colic/aquisicoes');
       }).catch(function (error) {
-        let msgError = '';
-        for (var index = 0; index < error.response.data.length; index++) {
-          msgError = msgError+error.response.data[index].message+'\n';
-        }
-        alert(msgError);
+        alert(error.response.data.message);
       });
     }
   }

@@ -259,7 +259,7 @@ function EditarAquisicao(){
                   <button 
                     type='submit' 
                     className="form-btn">
-                      Cadastrar
+                      Salvar
                   </button>
                   <div className="clear"></div>
                 </div>

@@ -1,35 +1,97 @@
 import {useState, useEffect} from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import {RiEditBoxFill} from 'react-icons/ri';
+import { MdDelete} from 'react-icons/md';
+import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import {api, Config} from '../../Services/api';
-import AddEmpenho from '../../Components/Add-Empenho/add-empenho';
+import {api, Config, SetarTokenNull} from '../../Services/api';
 
 import '../../Styles/form.css';
 import './style.css';
+import '../../Styles/table.css';
+
 
 function VizualizarAquisicao(){
-  const [modal, setModal] = useState('');
+  const navigateTo = useNavigate();
   const {id} = useParams();
   const [rec_Extra, setRec_Extra] = useState(true);
   const config = Config();
-  const [aquisicao,setAquisicao] = useState({});
+  const [aquisicao,setAquisicao] = useState({}); console.log(aquisicao);
   const [servidor,setServidor] = useState({});
   const [setor,setSetor] = useState({});
-  function openModal() {
-    switch (modal) {
-      case 'Nota de Empenho': 
-        return(
-          <AddEmpenho onChangeModal={setModal} />
-        );
-        
-      case 'Entrega': 
-        console.log('Entrega');
-        break;
-        
-      default:
-        return(
-        <div className='sap-container-page'>
+  const [empenhos,setEmpenhos] = useState([]);
+
+  //Deleta Empenho
+  function onClickDeleteEmpenho(idEmpenho){
+    let thisEmpenho = '';
+    //Busca o numero do empenho
+    empenhos.map(empenho => {
+      if (empenho.id === idEmpenho) {
+        thisEmpenho = empenho.numeroEmpenho;
+      }
+    });
+    if (window.confirm("Tem certeza que deseja deletar o empenho "+thisEmpenho+"?") == true) {
+      api.delete(`empenhos/${idEmpenho}`, config).then(response => { 
+        alert("Empenho deletado com sucesso!!");
+        window.location.reload();
+      }).catch(function(error){
+        alert("O processo ainda não possui empenhos");
+      });
+    }
+  }
+  
+  //Setando colunas da tabela em referência a API 
+  const columns = [
+    {
+      dataField: 'numeroEmpenho',
+      text: 'Empenho'
+    },
+    {
+      dataField: 'valorTotalNE',
+      text: 'Valor'
+    },
+    {
+      dataField: 'fornecedor.razaoSocial',
+      text: 'Fornecedor',
+      formatter: (row, rowIndex) => (
+        <Link className='sap-table-link'  to={'/colic/vizualizar/fornecedor/'+rowIndex.fornecedor.id}>{row}</Link>
+      ),
+    },
+    {
+      dataField: 'id',
+      text: '',
+      formatter: (row) => (
+        <div className='sap-div-table-link-icon'>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <div className='sap-table-link-icon'onClick={() => onClickDeleteEmpenho(row)}><MdDelete size={25} color="#09210E"/></div>
+          <br />
+        </div>
+      ),
+    }
+  ];
+
+  //Pegando dados da API 
+  useEffect(() => {
+    api.get(`aquisicoes/${id}`, config).then(response => {
+      setAquisicao(response.data);
+      setServidor(response.data.servidor);
+      setSetor(response.data.servidor.setor);
+      setRec_Extra(response.data.recExtraOrc); 
+
+      api.get(`empenhos/search?aquisicao=${response.data.numeroAquisicao}`, config).then(response => { 
+        setEmpenhos(response.data);
+      }).catch(function(error){
+        alert("O processo ainda não possui empenhos");
+      });
+    });
+    
+  }, []);
+  return (
+    <div className="sap-container">
+      <NavbarMenu />
+      <div className='sap-container-page'>
           <div className="sap-container-div-with-menu-title">
             <h1>Aquisição {aquisicao.numeroAquisicao}</h1>
           </div>
@@ -54,12 +116,12 @@ function VizualizarAquisicao(){
                       disabled 
                     />
                     <label>Processo SEI</label>
-                    <input
-                      className="form-input form-input-w100 sap-form-input-disabled"
-                      type="text"
-                      value={aquisicao.numeroProcesso}
-                      disabled 
-                    />
+                    <a
+                        className="form-input form-input-w100 sap-form-input-disabled form-input-a"
+                        href={aquisicao.linkProcesso}
+                        target="_blank"
+                      >{aquisicao.numeroProcesso}</a>
+
                     <label>Tipo</label>
                     <input
                       className="form-input form-input-w100 sap-form-input-disabled"
@@ -131,36 +193,55 @@ function VizualizarAquisicao(){
                   </div>
                 </div>
               </form>
+              {
+                empenhos.length > 0 && 
+                <div className='sap-div-table-aquisicao'>
+                  <div className="sap-table-title">
+                    <h1>Nota de Empenho</h1>
+                  </div>
+                  <ToolkitProvider
+                    keyField ='id'
+                    data={empenhos}
+                    columns={columns}
+                  >
+                    {
+                      props => (
+                          <div>
+                            <BootstrapTable
+                              bodyClasses="sap-table-td" 
+                              striped 
+                              bordered={ true }
+                              { ...props.baseProps }
+                            />
+                          </div>
+                        )
+                    }
+                </ToolkitProvider>
+              </div>
+              }
             </div>
             <div className='sap-container-div-with-menu-w20'>
               <div className='sap-btn-menu-sidebar'>
                 <Link className='sap-btn-menu-sidebar-link' to={'/colic/editar/aquisicoes/'+id}>Editar Aquisição</Link>
               </div>
-              <div className='sap-btn-menu-sidebar' onClick={() => setModal('Nota de Empenho')}>
+              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/cadastrar/empenho/'+id)}>
                 <span>Adicionar Nota de Empenho</span>
               </div>
-              <div className='sap-btn-menu-sidebar' onClick={() => setModal('Entrega')}>
-                <span>Adicionar Entrega</span>
+              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
+                <span>Adicionar Cobrança</span>
+              </div>
+              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
+                <span>Definir Status</span>
+              </div>
+              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
+                <span>Anotações</span>
+              </div>
+              <div className='sap-btn-menu-sidebar sap-btn-menu-sidebar-red' onClick={() => navigateTo('/colic/editar/empenho/')}>
+                <span>Deletar Processo</span>
               </div>
             </div>
           </div>
       </div>
-        );
-    }
-  } 
-  useEffect(() => {
-    api.get(`aquisicoes/${id}`, config).then(response => {
-      setAquisicao(response.data);
-      setServidor(response.data.servidor);
-      setSetor(response.data.servidor.setor);
-      setRec_Extra(response.data.recExtraOrc);
-    });
-  }, [id]);
-  
-  return (
-    <div className="sap-container">
-      <NavbarMenu />
-      {openModal()};
       
     </div>
   );

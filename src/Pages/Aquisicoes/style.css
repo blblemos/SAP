@@ -2,7 +2,6 @@
   width: 80%;
   margin: 15px auto;
   position: relative;
-  
 }
 
 .sap-container-div-with-menu-title{
@@ -22,8 +21,10 @@
 
 .sap-container-div-with-menu-w80{
   display: flex;
+  flex-direction: column;
   width: 80%;
   padding-top: 10px;
+  padding-bottom: 40px;
 }
 
 .sap-container-div-with-menu-w20{
@@ -50,4 +51,29 @@
   color: #fff;
   font-size: 1rem;
   font-weight: 700;
+}
+
+.sap-btn-menu-sidebar-red{
+  background-color: #CE1218;
+}
+
+.sap-div-table-aquisicao{
+  width: 80%;
+  margin: 0 auto;
+}
+
+.sap-table-title{
+  margin-bottom: 30px;
+}
+
+.sap-table-title h1{
+  font-size: 1rem;
+  font-weight: 900;
+  color: #09210E;
+  justify-content: space-between;
+  width: 100%; 
+
+  padding-bottom: 5px;
+
+  border-bottom: 3px solid #09210E;;
 }
