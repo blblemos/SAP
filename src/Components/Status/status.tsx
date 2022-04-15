@@ -10,7 +10,7 @@ type props = {
     id: number
     status : string};
   status: string;
-  onChangeModal: (modalLink: boolean ) => void;
+  onChangeModal: (modalLink: string ) => void;
 }
 
 function Status({ onChangeModal, aquisicao, status} : props) {
@@ -35,7 +35,7 @@ function Status({ onChangeModal, aquisicao, status} : props) {
   }
   return (
     <div className="sap-container-modal">
-      <AiFillCloseCircle className="sap-close-modal" size={30} color="#CE1218" onClick={() => onChangeModal(false)}/>
+      <AiFillCloseCircle className="sap-close-modal" size={30} color="#CE1218" onClick={() => onChangeModal('')}/>
       <div className="sap-div-modal-mini">
         <div className="form-elements-column w-100">
         <Formik
