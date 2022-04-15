@@ -201,6 +201,7 @@ label {
 
 .sap-form-select{
   width: 100%;
+  height: 66px;
   border: 3px solid #09210E;
   border-radius: 10px;
   font-weight: 900;
@@ -211,10 +212,6 @@ label {
 
 .sap-form-select-error{
   border: 3px solid #CE1218!important;
-}
-
-select {
-  background-color: #CE1218;
 }
 
 .sap-form-button-select-margin-bot {

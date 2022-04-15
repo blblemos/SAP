@@ -6,6 +6,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
+import Status from '../../Components/Status/status';
 import {api, Config, SetarTokenNull} from '../../Services/api';
 
 import '../../Styles/form.css';
@@ -18,10 +19,12 @@ function VizualizarAquisicao(){
   const {id} = useParams();
   const [rec_Extra, setRec_Extra] = useState(true);
   const config = Config();
-  const [aquisicao,setAquisicao] = useState({}); console.log(aquisicao);
+  const [aquisicao,setAquisicao] = useState({});
   const [servidor,setServidor] = useState({});
   const [setor,setSetor] = useState({});
   const [empenhos,setEmpenhos] = useState([]);
+  {/*Definir Set de modal para abrir e fechar o status */}
+  const [modalStatus, setModalStatus] = useState(false);
 
   //Deleta Empenho
   function onClickDeleteEmpenho(idEmpenho){
@@ -91,6 +94,14 @@ function VizualizarAquisicao(){
   return (
     <div className="sap-container">
       <NavbarMenu />
+      {/*Abrir Modal de Status*/}
+      {modalStatus &&
+        <Status
+          aquisicao={aquisicao}
+          status={aquisicao.status}
+          onChangeModal={setModalStatus}
+        />
+      }
       <div className='sap-container-page'>
           <div className="sap-container-div-with-menu-title">
             <h1>Aquisição {aquisicao.numeroAquisicao}</h1>
@@ -230,7 +241,7 @@ function VizualizarAquisicao(){
               <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
                 <span>Adicionar Cobrança</span>
               </div>
-              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
+              <div className='sap-btn-menu-sidebar' onClick={() => setModalStatus(true)}>
                 <span>Definir Status</span>
               </div>
               <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
