@@ -89,6 +89,10 @@
   height: 150px;
 }
 
+.form-input-textarea-anotacoes{
+  height: 50vh;
+  padding: 5px;
+}
 label {
   font-size: 18px;
   font-weight: 900;

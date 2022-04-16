@@ -7,6 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Status from '../../Components/Status/status';
+import Anotacoes from '../../Components/Anotacoes/anotacoes';
 import {api, Config, SetarTokenNull} from '../../Services/api';
 
 import '../../Styles/form.css';
@@ -23,9 +24,31 @@ function VizualizarAquisicao(){
   const [servidor,setServidor] = useState({});
   const [setor,setSetor] = useState({});
   const [empenhos,setEmpenhos] = useState([]);
-  {/*Definir Set de modal para abrir e fechar o status */}
-  const [modalStatus, setModalStatus] = useState(false);
-
+  {/*Definir Set de modal*/}
+  const [modal, setModal] = useState('');
+  {/*Selecionar Modal ativa*/}
+  let divModal; 
+  switch (modal) {
+    case 'status':
+      divModal =
+      <Status
+          aquisicao={aquisicao}
+          status={aquisicao.status}
+          onChangeModal={setModal}
+        />
+      break;
+    case 'anotacoes':
+    divModal =
+      <Anotacoes
+          aquisicao={aquisicao}
+          anotacao={aquisicao.anotacoes}
+          onChangeModal={setModal}
+        />
+    break;
+  
+    default:
+      break;
+  }
   //Deleta Empenho
   function onClickDeleteEmpenho(idEmpenho){
     let thisEmpenho = '';
@@ -77,12 +100,13 @@ function VizualizarAquisicao(){
 
   //Pegando dados da API 
   useEffect(() => {
+    //Pegando dados da aquisição
     api.get(`aquisicoes/${id}`, config).then(response => {
       setAquisicao(response.data);
       setServidor(response.data.servidor);
       setSetor(response.data.servidor.setor);
       setRec_Extra(response.data.recExtraOrc); 
-
+    //Pegando empenhos relacionados a aquisição
       api.get(`empenhos/search?aquisicao=${response.data.numeroAquisicao}`, config).then(response => { 
         setEmpenhos(response.data);
       }).catch(function(error){
@@ -94,13 +118,8 @@ function VizualizarAquisicao(){
   return (
     <div className="sap-container">
       <NavbarMenu />
-      {/*Abrir Modal de Status*/}
-      {modalStatus &&
-        <Status
-          aquisicao={aquisicao}
-          status={aquisicao.status}
-          onChangeModal={setModalStatus}
-        />
+      {/*Abrir Modal Selecionado*/
+        divModal
       }
       <div className='sap-container-page'>
           <div className="sap-container-div-with-menu-title">
@@ -241,10 +260,10 @@ function VizualizarAquisicao(){
               <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
                 <span>Adicionar Cobrança</span>
               </div>
-              <div className='sap-btn-menu-sidebar' onClick={() => setModalStatus(true)}>
+              <div className='sap-btn-menu-sidebar' onClick={() => setModal('status')}>
                 <span>Definir Status</span>
               </div>
-              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
+              <div className='sap-btn-menu-sidebar' onClick={() => setModal('anotacoes')}>
                 <span>Anotações</span>
               </div>
               <div className='sap-btn-menu-sidebar sap-btn-menu-sidebar-red' onClick={() => navigateTo('/colic/editar/empenho/')}>
