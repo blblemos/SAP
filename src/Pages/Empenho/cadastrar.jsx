@@ -126,9 +126,9 @@ function AddEmpenho() {
                         name="TipoEmpenho" 
                         as="select">
                         <option value="null"></option>
-                        <option value="ordinario">Ordinário</option>
-                        <option value="estimativo">Estimativo</option>
-                        <option value="globa">Global</option>
+                        <option value="Ordinário">Ordinário</option>
+                        <option value="Estimativo">Estimativo</option>
+                        <option value="Global">Global</option>
                       </Field>
                     </div>
                     <label>Data de envio da NE pela COLIC ao Fornecedor</label>

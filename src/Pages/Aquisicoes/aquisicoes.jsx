@@ -72,7 +72,10 @@ function VizualizarAquisicao(){
   const columns = [
     {
       dataField: 'numeroEmpenho',
-      text: 'Empenho'
+      text: 'Empenho',
+      formatter: (row, rowIndex) => (
+        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
+      ),
     },
     {
       dataField: 'valorTotalNE',

@@ -14,6 +14,7 @@ import VizualizarAquisicao from './Pages/Aquisicoes/aquisicoes';
 import EditarAquisicao from './Pages/Aquisicoes/editar';
 import AddEmpenho from './Pages/Empenho/cadastrar';
 import EditEmpenho from './Pages/Empenho/editar';
+import VizualizarEmpenho from './Pages/Empenho/vizualizar';
 import CadastrarFornecedor from './Pages/Fornecedores/cadastro';
 import ListaFornecedor from './Pages/Fornecedores/lista';
 import EditarFornecedor from './Pages/Fornecedores/editar';
@@ -43,6 +44,7 @@ function Rotas() {
             <Route path="/colic/setor/:id" element={<VizualizarSetor/>} />
             <Route path="/colic/servidor/:id" element={<VizualizarServidor/>} />
             <Route path="/colic/item/:id" element={<VizualizarItem/>} />
+            <Route path="/colic/empenho/:idAquisicao/:idEmpenho" element={<VizualizarEmpenho/>} />
             <Route path="/colic/vizualizar/fornecedor/:id" element={<VizualizarFornecedor/>} />
             <Route path="/colic/cadastrar/aquisicao" element={<CadastrarAquisicao/>} />
             <Route path="/colic/cadastrar/setor" element={<CadastrarSetor/>} />
