@@ -260,7 +260,7 @@ function VizualizarAquisicao(){
               <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/cadastrar/empenho/'+id)}>
                 <span>Adicionar Nota de Empenho</span>
               </div>
-              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/editar/empenho/')}>
+              <div className='sap-btn-menu-sidebar' onClick={() => navigateTo('/colic/cadastrar/cobranca/'+id+'/'+aquisicao.numeroAquisicao)}>
                 <span>Adicionar Cobrança</span>
               </div>
               <div className='sap-btn-menu-sidebar' onClick={() => setModal('status')}>

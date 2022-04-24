@@ -13,6 +13,7 @@ import CadastrarAquisicao from './Pages/Aquisicoes/cadastro';
 import VizualizarAquisicao from './Pages/Aquisicoes/aquisicoes';
 import EditarAquisicao from './Pages/Aquisicoes/editar';
 import AddEmpenho from './Pages/Empenho/cadastrar';
+import AddCobranca from './Pages/Cobranca/cadastrar';
 import EditEmpenho from './Pages/Empenho/editar';
 import VizualizarEmpenho from './Pages/Empenho/vizualizar';
 import CadastrarFornecedor from './Pages/Fornecedores/cadastro';
@@ -52,6 +53,7 @@ function Rotas() {
             <Route path="/colic/cadastrar/item" element={<CadastrarItem/>} />
             <Route path="/colic/cadastrar/servidor" element={<Cadastrarservidor/>} />
             <Route path="/colic/cadastrar/empenho/:id" element={<AddEmpenho/>} />
+            <Route path="/colic/cadastrar/cobranca/:id/:aquisicao" element={<AddCobranca/>} />
             <Route path="/colic/editar/servidor/:id" element={<EditarServidor/>} />
             <Route path="/colic/editar/aquisicoes/:id" element={<EditarAquisicao/>} />
             <Route path="/colic/editar/fornecedor/:id" element={<EditarFornecedor/>} />

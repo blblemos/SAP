@@ -155,9 +155,22 @@ label {
   flex-direction: column;
 }
 
+
+.sap-form-container-input-column span {
+  position: relative;
+  top: -25px;
+  font-size: 0.9rem;
+}
+
 .sap-form-container-input-column-w60{
   width: 60%;
   margin-right: 15px;
+  height: 100vh;
+}
+
+.sap-form-container-input-column-w60 .sap-form-button-select{
+  position: relative;
+  top: -26px;
 }
 
 .sap-form-container-input-column-w40{
@@ -232,8 +245,9 @@ input[type=number] {
   appearance: textfield;
 }
 
-input[type=date]{
-  height: 66px; 
+input[type=date], 
+input[type=datetime-local]{
+  height: 66px!important; 
   padding: 20px 10px
 }
 
