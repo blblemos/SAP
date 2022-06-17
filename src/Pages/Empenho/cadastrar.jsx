@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {Formik, Field, Form} from 'formik';
+import {Formik, Field, Form, FieldArray} from 'formik';
 import VMasker from "vanilla-masker";
 
 import {AiFillCloseCircle} from 'react-icons/ai';
+import {MdDeleteForever} from 'react-icons/md';
 import {api, Config} from '../../Services/api';
 
 function AddEmpenho() {
@@ -30,10 +31,13 @@ function AddEmpenho() {
     });
     setValorTotal(valorT);
   }
+
+
+
   function onSubmit(values){
     const bodyParameters ={
       numeroEmpenho: values.NumeroEmpenho,
-      /*dataEmissao: values.DataEmissao,*/
+      dataEmissao: values.DataEmissao,
       valorTotalNE: valorTotal,
       tipoEmpenho: values.TipoEmpenho,
       dataInclusao: values.DataInclusao,
@@ -41,13 +45,11 @@ function AddEmpenho() {
       fornecedor: {
         id: values.Fornecedor
       },
-      item: {
-        id: values.Item
-      },
+      item: values.Item ,
       aquisicao: {
         id: parseInt(id)
       },
-    }
+    };
     api.post('empenhos', bodyParameters, config).then(function () { 
       alert(values.NumeroEmpenho+' Cadastrado Com Sucesso!');
       navigateTo('/colic/aquisicoes/'+id)
@@ -57,14 +59,13 @@ function AddEmpenho() {
           msgError = msgError+error.response.data[index].message+'\n';
         }
         alert(msgError);
-    })
+    }) 
   }
   return (
     <div className="sap-container-modal">
       <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => navigateTo('/colic/aquisicoes/'+id)}/>
       <div className="sap-div-modal">
       <Formik
-
           onSubmit={onSubmit}
           initialValues={{
             NumeroEmpenho: '',
@@ -74,7 +75,9 @@ function AddEmpenho() {
             DataInclusao: '',
             DataEnvio: '',
             Fornecedor: 0,
-            Item: 0
+            Item: [{
+              id: ''
+            }]
           }}
           enableReinitialize
         >
@@ -154,21 +157,43 @@ function AddEmpenho() {
                     }
                   </Field>
                 </div>
-                <label>Item</label>
-                <div className="sap-form-button-select sap-form-button-select-margin-bot">
-                  <Field
-                    className={errors.Item && touched.Item ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                    name="Item" 
-                    as="select">
-                    <option value="null"></option>
-                    {itens.map(item => {
-                      return (
-                        <option value={item.id}>{item.nome+' ('+item.catmat+')'}</option>
-                      )
-                    })
-                    }
-                  </Field>
-                </div>
+                <label>Itens</label>
+                  <FieldArray className="sap-form-button-select sap-form-button-select-margin-bot" name="Item">
+                    {({ remove, push }) => (
+                      <div>
+                        {values.Item.length > 0 &&
+                          values.Item.map((empenhoItem, index) => (
+                            <div className="sap-container-array-select" key={index}>
+                              <Field
+                                  className={errors.Item && touched.Item ? 'sap-form-select sap-form-select-error' : 'sap-form-select sap-form-select-array'}
+                                  name={`Item.${index}.id`}
+                                  as="select">
+                                  <option value="null"></option>
+                                  {itens.map(item => {
+                                    return (
+                                      <option value={item.id}>{item.nome+' ('+item.catmat+')'}</option>
+                                    )
+                                  })
+                                  }
+                                </Field>
+                                <button
+                                  type="button"
+                                  className="sap-remove-array-select"
+                                  onClick={() => remove(index)}
+                                >
+                                <MdDeleteForever size={25}/>
+                                </button>
+                            </div>
+                          ))}
+                        <div 
+                          className="sap-btn-add"
+                          onClick={() => push({ id: ''})}
+                          >
+                            <p>Adicionar Item</p>
+                        </div>
+                      </div>
+                    )}
+                  </FieldArray>
                 <div className="form-footer">
                   <button 
                     type='submit' 
