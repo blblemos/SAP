@@ -299,3 +299,37 @@ input[type=datetime-local]{
   position: absolute;
   width: 100vw;
 }
+
+.sap-btn-add{
+  display: flex;
+  width: 150px;
+  height: 50px;
+  background-color: #2B9F3F;
+  color:rgb(255, 255, 255);
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.sap-btn-add p{
+  margin: auto;
+}
+
+.sap-container-array-select{
+  display: flex;
+  width: 100%;
+}
+
+.sap-form-select-array{
+  margin-bottom: 20px;
+  margin-right: 10px;
+}
+
+.sap-remove-array-select{
+  background-color: transparent;
+  width: 25px;
+  height: 25px;
+  margin-top: 20.5px;
+  border: none;
+  outline: none;
+}

@@ -69,7 +69,7 @@ function VizualizarAquisicao(){
   }
   
   //Setando colunas da tabela em referência a API 
-  const columns = [
+  const columns_empenho = [
     {
       dataField: 'numeroEmpenho',
       text: 'Empenho',
@@ -101,6 +101,68 @@ function VizualizarAquisicao(){
     }
   ];
 
+  const columns_entrega = [
+    {
+      dataField: 'numeroEmpenho',
+      text: 'Empenho',
+      formatter: (row, rowIndex) => (
+        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
+      ),
+    },
+    {
+      dataField: 'valorTotalNE',
+      text: 'Status da Entrega'
+    },
+    {
+      dataField: 'fornecedor.razaoSocial',
+      text: 'Ateste',
+      formatter: (row, rowIndex) => (
+        <span className='sap-table-link'>{row}</span>
+      ),
+    },
+    {
+      dataField: 'id',
+      text: '',
+      formatter: (row) => (
+        <div className='sap-div-table-link-icon'>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <br />
+        </div>
+      ),
+    }
+  ];
+
+  const columns_pagamento = [
+    {
+      dataField: 'numeroEmpenho',
+      text: 'Empenho',
+      formatter: (row, rowIndex) => (
+        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
+      ),
+    },
+    {
+      dataField: 'valorTotalNE',
+      text: 'Status do Pagamento'
+    },
+    {
+      dataField: 'valorTotalNE',
+      text: 'Nota Fiscal'
+    },
+    {
+      dataField: 'valorTotalNE',
+      text: 'Ordem Bancária'
+    },
+    {
+      dataField: 'id',
+      text: '',
+      formatter: (row) => (
+        <div className='sap-div-table-link-icon'>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <br />
+        </div>
+      ),
+    }
+  ];
   //Pegando dados da API 
   useEffect(() => {
     //Pegando dados da aquisição
@@ -166,7 +228,7 @@ function VizualizarAquisicao(){
                     <input
                       className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
-                      
+                      value={aquisicao.orcamento}
                       disabled 
                     />
                   </div>
@@ -226,32 +288,6 @@ function VizualizarAquisicao(){
                   </div>
                 </div>
               </form>
-              {
-                empenhos.length > 0 && 
-                <div className='sap-div-table-aquisicao'>
-                  <div className="sap-table-title">
-                    <h1>Nota de Empenho</h1>
-                  </div>
-                  <ToolkitProvider
-                    keyField ='id'
-                    data={empenhos}
-                    columns={columns}
-                  >
-                    {
-                      props => (
-                          <div>
-                            <BootstrapTable
-                              bodyClasses="sap-table-td" 
-                              striped 
-                              bordered={ true }
-                              { ...props.baseProps }
-                            />
-                          </div>
-                        )
-                    }
-                </ToolkitProvider>
-              </div>
-              }
             </div>
             <div className='sap-container-div-with-menu-w20'>
               <div className='sap-btn-menu-sidebar'>
@@ -273,7 +309,88 @@ function VizualizarAquisicao(){
                 <span>Deletar Processo</span>
               </div>
             </div>
+            
           </div>
+          {//Tabela Empenho
+                empenhos.length > 0 && 
+                <div className='sap-div-table-aquisicao'>
+                  <div className="sap-table-title">
+                    <h1>Nota de Empenho</h1>
+                  </div>
+                  <ToolkitProvider
+                    keyField ='id'
+                    data={empenhos}
+                    columns={columns_empenho}
+                  >
+                    {
+                      props => (
+                          <div>
+                            <BootstrapTable
+                              bodyClasses="sap-table-td" 
+                              striped 
+                              bordered={ true }
+                              { ...props.baseProps }
+                            />
+                          </div>
+                        )
+                    }
+                </ToolkitProvider>
+              </div>
+              }
+              
+              {//Tabela Entrega
+                empenhos.length > 0 && 
+                <div className='sap-div-table-aquisicao'>
+                  <div className="sap-table-title">
+                    <h1>Entrega</h1>
+                  </div>
+                  <ToolkitProvider
+                    keyField ='id'
+                    data={empenhos}
+                    columns={columns_entrega}
+                  >
+                    {
+                      props => (
+                          <div>
+                            <BootstrapTable
+                              bodyClasses="sap-table-td" 
+                              striped 
+                              bordered={ true }
+                              { ...props.baseProps }
+                            />
+                          </div>
+                        )
+                    }
+                </ToolkitProvider>
+              </div>
+              }
+
+              {//Tabela Pagamento
+                empenhos.length > 0 && 
+                <div className='sap-div-table-aquisicao'>
+                  <div className="sap-table-title">
+                    <h1>Pagamento</h1>
+                  </div>
+                  <ToolkitProvider
+                    keyField ='id'
+                    data={empenhos}
+                    columns={columns_pagamento}
+                  >
+                    {
+                      props => (
+                          <div>
+                            <BootstrapTable
+                              bodyClasses="sap-table-td" 
+                              striped 
+                              bordered={ true }
+                              { ...props.baseProps }
+                            />
+                          </div>
+                        )
+                    }
+                </ToolkitProvider>
+              </div>
+              }
       </div>
       
     </div>
