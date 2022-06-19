@@ -170,41 +170,41 @@ function EditEmpenho() {
                 </div>
                 <label>Item</label>
                 <FieldArray className="sap-form-button-select sap-form-button-select-margin-bot" name="Item">
-                    {({ remove, push }) => (
-                      <div>
-                        {values.Item.length > 0 &&
-                          values.Item.map((empenhoItem, index) => (
-                            <div className="sap-container-array-select" key={index}>
-                              <Field
-                                  className={errors.Item && touched.Item ? 'sap-form-select sap-form-select-error' : 'sap-form-select sap-form-select-array'}
-                                  name={`Item.${index}.id`}
-                                  as="select">
-                                  <option value="null"></option>
-                                  {itens.map(item => {
-                                    return (
-                                      <option value={item.id}>{item.nome+' ('+item.catmat+')'}</option>
-                                    )
-                                  })
-                                  }
-                                </Field>
-                                <button
-                                  type="button"
-                                  className="sap-remove-array-select"
-                                  onClick={() => remove(index)}
-                                >
-                                <MdDeleteForever size={25}/>
-                                </button>
-                            </div>
-                          ))}
-                        <div 
-                          className="sap-btn-add"
-                          onClick={() => push({ id: ''})}
-                          >
-                            <p>Adicionar Item</p>
-                        </div>
+                  {({ remove, push }) => (
+                    <div>
+                      {values.Item.length > 0 &&
+                        values.Item.map((empenhoItem, index) => (
+                          <div className="sap-container-array-select" key={index}>
+                            <Field
+                                className={errors.Item && touched.Item ? 'sap-form-select sap-form-select-error' : 'sap-form-select sap-form-select-array'}
+                                name={`Item.${index}.id`}
+                                as="select">
+                                <option value="null"></option>
+                                {itens.map(item => {
+                                  return (
+                                    <option value={item.id}>{item.nome+' ('+item.catmat+')'}</option>
+                                  )
+                                })
+                                }
+                              </Field>
+                              <button
+                                type="button"
+                                className="sap-remove-array-select"
+                                onClick={() => remove(index)}
+                              >
+                              <MdDeleteForever size={25}/>
+                              </button>
+                          </div>
+                        ))}
+                      <div 
+                        className="sap-btn-add"
+                        onClick={() => push({ id: ''})}
+                        >
+                          <p>Adicionar Item</p>
                       </div>
-                    )}
-                  </FieldArray>
+                    </div>
+                  )}
+                </FieldArray>
                 <div className="form-footer">
                   <button 
                     type='submit' 

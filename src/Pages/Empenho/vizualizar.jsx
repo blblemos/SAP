@@ -1,7 +1,5 @@
 import {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {Formik, Field, Form} from 'formik';
-import VMasker from "vanilla-masker";
 
 import {AiFillCloseCircle} from 'react-icons/ai';
 import {api, Config} from '../../Services/api';
@@ -9,6 +7,7 @@ import {api, Config} from '../../Services/api';
 function VizualizarEmpenho() {
   const {idAquisicao, idEmpenho} = useParams();
   const navigateTo = useNavigate();
+  const [itens,setItens] = useState([]);console.log(itens);
   let config = {};
   config = Config();
   const [empenho,setEmpenho] = useState({
@@ -19,7 +18,6 @@ function VizualizarEmpenho() {
     DataInclusao: '',
     DataEnvio: '',    
     Fornecedor: '',
-    Item: ''
     });
   useEffect(() => {
     api.get(`empenhos/${idEmpenho}`, config).then(response => {
@@ -31,8 +29,8 @@ function VizualizarEmpenho() {
         DataInclusao: response.data.dataInclusao,
         DataEnvio: response.data.dataEnvio,    
         Fornecedor: response.data.fornecedor.nomeFantasia,
-        Item: response.data.item.nome
       });
+      setItens(response.data.item);
     });
   }, []);
   return (
@@ -97,15 +95,20 @@ function VizualizarEmpenho() {
               value={empenho.Fornecedor}
               disabled />
           </div>
-          <label>Item</label>
-          <div className="sap-form-button-select sap-form-button-select-margin-bot">
-            <input
-              className="form-input form-input-w100 sap-form-input-disabled"
-              type="text"
-              value={empenho.Item}
-              disabled/>
-
-          </div>
+          <label>Item</label>{
+            itens.map(item => {
+              return (
+                <div className="sap-form-button-select sap-form-button-select-margin-bot">
+                  <input
+                    className="form-input form-input-w100 sap-form-input-disabled"
+                    type="text"
+                    value={item.nome+' ('+item.catmat+')'}
+                    disabled/>
+                </div>
+              );
+            })
+          }
+          
         </form>
       </div>
     </div>
