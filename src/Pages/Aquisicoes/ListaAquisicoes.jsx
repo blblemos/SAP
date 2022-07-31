@@ -30,7 +30,7 @@ function ListaAquisicoes(){
       },
       {
         dataField: 'numeroProcesso',
-        text: 'PROCESSO'
+        text: 'PROCESSO',
       },
       {
         dataField: 'objeto',

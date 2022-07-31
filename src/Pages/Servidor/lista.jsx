@@ -15,7 +15,7 @@ const { SearchBar } = Search;
 
 function ListaServidor(){
   const [servidores,setServidores] = useState([]);
-  const config = Config(); let teste =[]
+  const config = Config();
   useEffect(() => {
     api.get('servidores', config).then(response => {
       setServidores(response.data);

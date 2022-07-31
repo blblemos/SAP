@@ -17,12 +17,22 @@
   font-size: 24px;
   font-weight: 900;
   color: #09210E;
-  justify-content: space-between;
+  display: flex;
+  position: relative;
   width: 100%; 
 
   padding-bottom: 5px;
 
   border-bottom: 3px solid #09210E;;
+}
+
+.form-title-av{
+  position: absolute;
+  right: 0;
+}
+
+.form-title-link-edit{
+  margin-left: 20px!important;
 }
 
 .form-elements {
@@ -57,6 +67,11 @@
   padding: 30px 10px;
 }
 
+.form-input-a{
+  display: flex;
+  align-items: center;
+}
+
 .form-input:focus {
   outline: 1px solid #2B9F3F;
 }
@@ -74,6 +89,10 @@
   height: 150px;
 }
 
+.form-input-textarea-anotacoes{
+  height: 50vh;
+  padding: 5px;
+}
 label {
   font-size: 18px;
   font-weight: 900;
@@ -107,6 +126,12 @@ label {
   transition: 500ms;
 }
 
+.div-form-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .form-btn:hover {
   background: #2B9F3F;
 }
@@ -130,9 +155,22 @@ label {
   flex-direction: column;
 }
 
+
+.sap-form-container-input-column span {
+  position: relative;
+  top: -25px;
+  font-size: 0.9rem;
+}
+
 .sap-form-container-input-column-w60{
   width: 60%;
   margin-right: 15px;
+  height: 100vh;
+}
+
+.sap-form-container-input-column-w60 .sap-form-button-select{
+  position: relative;
+  top: -26px;
 }
 
 .sap-form-container-input-column-w40{
@@ -180,6 +218,7 @@ label {
 
 .sap-form-select{
   width: 100%;
+  height: 66px;
   border: 3px solid #09210E;
   border-radius: 10px;
   font-weight: 900;
@@ -190,10 +229,6 @@ label {
 
 .sap-form-select-error{
   border: 3px solid #CE1218!important;
-}
-
-select {
-  background-color: #CE1218;
 }
 
 .sap-form-button-select-margin-bot {
@@ -210,8 +245,9 @@ input[type=number] {
   appearance: textfield;
 }
 
-input[type=date]{
-  height: 66px; 
+input[type=date], 
+input[type=datetime-local]{
+  height: 66px!important; 
   padding: 20px 10px
 }
 
@@ -262,4 +298,38 @@ input[type=date]{
   display: flex;
   position: absolute;
   width: 100vw;
+}
+
+.sap-btn-add{
+  display: flex;
+  width: 150px;
+  height: 50px;
+  background-color: #2B9F3F;
+  color:rgb(255, 255, 255);
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.sap-btn-add p{
+  margin: auto;
+}
+
+.sap-container-array-select{
+  display: flex;
+  width: 100%;
+}
+
+.sap-form-select-array{
+  margin-bottom: 20px;
+  margin-right: 10px;
+}
+
+.sap-remove-array-select{
+  background-color: transparent;
+  width: 25px;
+  height: 25px;
+  margin-top: 20.5px;
+  border: none;
+  outline: none;
 }

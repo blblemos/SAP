@@ -52,16 +52,13 @@ function CadastrarAquisicao(){
         pac: parseInt(values.Pac),
         recExtraOrc: rec_Extra,
         anotacoes: values.Anotações,
-      }; console.log(bodyParameters);
+        orcamento: values.Orcamento,
+      }; 
       api.post('aquisicoes',bodyParameters, config).then(function () {
         alert('Cadastrado Com Sucesso!');
         navigateTo('/colic/aquisicoes');
       }).catch(function (error) {
-        let msgError = '';
-        for (var index = 0; index < error.response.data.length; index++) {
-          msgError = msgError+error.response.data[index].message+'\n';
-        }
-        alert(msgError);
+        alert(error.response.data.message);
       });
     }
   }
@@ -155,8 +152,8 @@ function CadastrarAquisicao(){
                         name="Orcamento" 
                         as="select">
                         <option value="null"></option>
-                        <option value="custeio">Custeio</option>
-                        <option value="investimento">Investimento</option>
+                        <option value="Custeio">Custeio</option>
+                        <option value="Investimento">Investimento</option>
                       </Field>
                     </div>
                   </div>

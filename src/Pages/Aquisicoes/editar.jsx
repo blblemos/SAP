@@ -81,6 +81,7 @@ function EditarAquisicao(){
         numeroProcesso: values.NomeroProcesso,
         linkProcesso: linkProcesso,
         data: values.Data,
+        orcamento: values.Orcamento,
         objeto: values.Objeto,
         tipo: values.Tipo,
         modalidade: values.Modalidade,
@@ -89,7 +90,6 @@ function EditarAquisicao(){
         anotacoes: values.Anotações,
         numeroAquisicao: numeroAquisicao,
         status: status,
-        
       }; 
       await api.put(`aquisicoes/${id}`,bodyParameters, config).then(function () {
         alert('Editado Com Sucesso!');
@@ -181,8 +181,8 @@ function EditarAquisicao(){
                         name="Orcamento" 
                         as="select">
                         <option value="null"></option>
-                        <option value="custeio">Custeio</option>
-                        <option value="investimento">Investimento</option>
+                        <option value="Custeio">Custeio</option>
+                        <option value="Investimento">Investimento</option>
                       </Field>
                     </div>
                   </div>
@@ -259,7 +259,7 @@ function EditarAquisicao(){
                   <button 
                     type='submit' 
                     className="form-btn">
-                      Cadastrar
+                      Salvar
                   </button>
                   <div className="clear"></div>
                 </div>

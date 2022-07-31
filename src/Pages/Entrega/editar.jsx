@@ -1,41 +1,51 @@
 import {useState, useEffect} from 'react';
-import {Formik, Field, Form} from 'formik';
+import { useParams, useNavigate } from 'react-router-dom';
+import {Formik, Field, Form, FieldArray} from 'formik';
 import VMasker from "vanilla-masker";
 
 import {AiFillCloseCircle} from 'react-icons/ai';
+import {MdDeleteForever} from 'react-icons/md';
 import {api, Config} from '../../Services/api';
 
-type props = {
-  onChangeModal: (link: string ) => void;
-}
-
-interface Fornecedores {
-  id: number;
-  razaoSocial: string
-  cnpj: string
-}
-
-interface Itens {
-  id: number;
-  nome: string
-  catmat: string
-}
-
-function AddEmpenho({onChangeModal} : props) {
+function EditEntrega() {
+  const {idAquisicao, idEmpenho} = useParams();
+  const navigateTo = useNavigate();
   const [valorTotal, setValorTotal] = useState('');
   let config = {};
   config = Config();
-  const [fornecedores,setFornecedores] = useState<Fornecedores[]>([]);
-  const [itens,setItens] = useState<Itens[]>([]);
+  const [fornecedores,setFornecedores] = useState([]);
+  const [itens,setItens] = useState([]);
+  const [empenho,setEmpenho] = useState({
+    NumeroEmpenho: '',
+    DataEmissao: '',
+    ValorTotalNE: '',
+    TipoEmpenho: '',
+    DataInclusao: '',
+    DataEnvio: '',    
+    Fornecedor: 0,
+    Item: []
+    });
   useEffect(() => {
     api.get(`fornecedores`, config).then(response => {
       setFornecedores(response.data);
     });
     api.get(`itens`, config).then(response => {
       setItens(response.data);
-    })
+    });
+    api.get(`empenhos/${idEmpenho}`, config).then(response => {
+      setEmpenho({
+        NumeroEmpenho: response.data.numeroEmpenho,
+        DataEmissao: response.data.dataEmissao,
+        ValorTotalNE: response.data.valorTotalNE,
+        TipoEmpenho: response.data.tipoEmpenho,
+        DataInclusao: response.data.dataInclusao,
+        DataEnvio: response.data.dataEnvio,    
+        Fornecedor: response.data.fornecedor.id,
+        Item: response.data.item
+      });
+    });
   }, []);
-  function onChange(valor_total: string) {
+  function onChange(valor_total) {
     const valorT = VMasker.toMoney(valor_total, {
       precision: 2,
       separator: ",",
@@ -44,26 +54,42 @@ function AddEmpenho({onChangeModal} : props) {
     });
     setValorTotal(valorT);
   }
-  function onSubmit(values: {}){
-
+  async function onSubmit(values){
+    const bodyParameters ={
+      id: idEmpenho,
+      numeroEmpenho: values.NumeroEmpenho,
+      dataEmissao: values.DataEmissao,
+      valorTotalNE: valorTotal,
+      tipoEmpenho: values.TipoEmpenho,
+      dataInclusao: values.DataInclusao,
+      dataEnvio: values.DataEnvio,
+      fornecedor: {
+        id: values.Fornecedor
+      },
+      item: values.Item ,
+      aquisicao: {
+        id: parseInt(idAquisicao)
+      },
+    }
+    await api.put(`empenhos/${idEmpenho}`, bodyParameters, config).then(function () { 
+      alert(values.NumeroEmpenho+' Editado Com Sucesso!');
+      navigateTo('/colic/aquisicoes/'+idAquisicao);
+    }).catch(function (error) {
+      let msgError = '';
+        for (var index = 0; index < error.response.data.length; index++) {
+          msgError = msgError+error.response.data[index].message+'\n';
+        }
+        alert(msgError);
+    })
   }
   return (
     <div className="sap-container-modal">
-      <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => onChangeModal('')}/>
+      <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => navigateTo('/colic/aquisicoes/'+idAquisicao)}/>
       <div className="sap-div-modal">
       <Formik
 
           onSubmit={onSubmit}
-          initialValues={{
-            NumeroEmpenho: '',
-            DataEmissao: '',
-            ValorTotalNE: '',
-            TipoEmpenho: '',
-            DataInclusao: '',
-            DataEnvio: '',
-            Fornecedor: '',
-            Item: ''
-          }}
+          initialValues={empenho}
           enableReinitialize
         >
           {({errors,touched,values}) => {
@@ -72,7 +98,7 @@ function AddEmpenho({onChangeModal} : props) {
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>Nota de Empenho</h1>
+                  <h1>Editar Nota de Empenho Nº {empenho.NumeroEmpenho}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
@@ -114,9 +140,9 @@ function AddEmpenho({onChangeModal} : props) {
                         name="TipoEmpenho" 
                         as="select">
                         <option value="null"></option>
-                        <option value="ordinario">Ordinário</option>
-                        <option value="estimativo">Estimativo</option>
-                        <option value="globa">Global</option>
+                        <option value="Ordinário">Ordinário</option>
+                        <option value="Estimativo">Estimativo</option>
+                        <option value="Global">Global</option>
                       </Field>
                     </div>
                     <label>Data de envio da NE pela COLIC ao Fornecedor</label>
@@ -143,20 +169,42 @@ function AddEmpenho({onChangeModal} : props) {
                   </Field>
                 </div>
                 <label>Item</label>
-                <div className="sap-form-button-select sap-form-button-select-margin-bot">
-                  <Field
-                    className={errors.Item && touched.Item ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                    name="Item" 
-                    as="select">
-                    <option value="null"></option>
-                    {itens.map(item => {
-                      return (
-                        <option value={item.id}>{item.nome+' ('+item.catmat+')'}</option>
-                      )
-                    })
-                    }
-                  </Field>
-                </div>
+                <FieldArray className="sap-form-button-select sap-form-button-select-margin-bot" name="Item">
+                    {({ remove, push }) => (
+                      <div>
+                        {values.Item.length > 0 &&
+                          values.Item.map((empenhoItem, index) => (
+                            <div className="sap-container-array-select" key={index}>
+                              <Field
+                                  className={errors.Item && touched.Item ? 'sap-form-select sap-form-select-error' : 'sap-form-select sap-form-select-array'}
+                                  name={`Item.${index}.id`}
+                                  as="select">
+                                  <option value="null"></option>
+                                  {itens.map(item => {
+                                    return (
+                                      <option value={item.id}>{item.nome+' ('+item.catmat+')'}</option>
+                                    )
+                                  })
+                                  }
+                                </Field>
+                                <button
+                                  type="button"
+                                  className="sap-remove-array-select"
+                                  onClick={() => remove(index)}
+                                >
+                                <MdDeleteForever size={25}/>
+                                </button>
+                            </div>
+                          ))}
+                        <div 
+                          className="sap-btn-add"
+                          onClick={() => push({ id: ''})}
+                          >
+                            <p>Adicionar Item</p>
+                        </div>
+                      </div>
+                    )}
+                  </FieldArray>
                 <div className="form-footer">
                   <button 
                     type='submit' 
@@ -174,4 +222,4 @@ function AddEmpenho({onChangeModal} : props) {
   );
 }
 
-export default AddEmpenho;
+export default EditEntrega;

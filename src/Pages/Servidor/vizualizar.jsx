@@ -38,7 +38,7 @@ function VizualizarServidor(){
       });
       setColic(response.data.colic);
     });
-  }, []);
+  }, [id]);
   
   return (
     <div className="sap-container">
