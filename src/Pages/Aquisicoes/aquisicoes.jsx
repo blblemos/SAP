@@ -24,6 +24,7 @@ function VizualizarAquisicao(){
   const [servidor,setServidor] = useState({});
   const [setor,setSetor] = useState({});
   const [empenhos,setEmpenhos] = useState([]);
+  const [entrega,setEntrega] = useState([]);console.log(entrega);
   {/*Definir Set de modal*/}
   const [modal, setModal] = useState('');
   {/*Selecionar Modal ativa*/}
@@ -49,6 +50,38 @@ function VizualizarAquisicao(){
     default:
       break;
   }
+  //Pegando dados da API 
+  useEffect(() => {
+    //Pegando dados da aquisição
+    api.get(`aquisicoes/${id}`, config).then(response => {
+      setAquisicao(response.data);
+      setServidor(response.data.servidor);
+      setSetor(response.data.servidor.setor);
+      setRec_Extra(response.data.recExtraOrc); 
+    //Pegando empenhos relacionados a aquisição
+      api.get(`empenhos/search?aquisicao=${response.data.numeroAquisicao}`, config).then(response => { 
+        setEmpenhos(response.data);
+      }).catch(function(error){
+        alert("O processo ainda não possui empenhos");
+      });
+    });
+    //Pegando entregas relacionadas aos empenhos da aquisição
+    let addEntrega = [];
+    empenhos.map(empenho => {
+      api.get(`entregas/search?empenho=${empenho.numeroEmpenho}`, config).then(response => {
+        addEntrega.push({
+          id: response.data[0].id,
+          recebimentoFornecedor: response.data[0].recebimentoFornecedor,
+          entregue: response.data[0].entregue,
+          servidor: response.data[0].servidor,
+          dataAteste: response.data[0].dataAteste
+        });
+      }).catch(function (error){
+        console.log("deu erro");
+      });
+    });
+    setEntrega(addEntrega);
+  }, []);
   //Deleta Empenho
   function onClickDeleteEmpenho(idEmpenho){
     let thisEmpenho = '';
@@ -103,29 +136,29 @@ function VizualizarAquisicao(){
 
   const columns_entrega = [
     {
-      dataField: 'numeroEmpenho',
+      dataField: 'id',
       text: 'Empenho',
       formatter: (row, rowIndex) => (
         <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
       ),
     },
     {
-      dataField: 'valorTotalNE',
+      dataField: 'id',
       text: 'Status da Entrega'
     },
     {
-      dataField: 'fornecedor.razaoSocial',
+      dataField: 'entregue',
       text: 'Ateste',
       formatter: (row, rowIndex) => (
         <span className='sap-table-link'>{row}</span>
       ),
     },
     {
-      dataField: 'id',
+      dataField: 'entregue',
       text: '',
       formatter: (row) => (
         <div className='sap-div-table-link-icon'>
-          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/entrega/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
           <br />
         </div>
       ),
@@ -163,23 +196,6 @@ function VizualizarAquisicao(){
       ),
     }
   ];
-  //Pegando dados da API 
-  useEffect(() => {
-    //Pegando dados da aquisição
-    api.get(`aquisicoes/${id}`, config).then(response => {
-      setAquisicao(response.data);
-      setServidor(response.data.servidor);
-      setSetor(response.data.servidor.setor);
-      setRec_Extra(response.data.recExtraOrc); 
-    //Pegando empenhos relacionados a aquisição
-      api.get(`empenhos/search?aquisicao=${response.data.numeroAquisicao}`, config).then(response => { 
-        setEmpenhos(response.data);
-      }).catch(function(error){
-        alert("O processo ainda não possui empenhos");
-      });
-    });
-    
-  }, []);
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -338,7 +354,7 @@ function VizualizarAquisicao(){
               </div>
               }
               
-              {//Tabela Entrega
+              {/*//Tabela Entrega
                 empenhos.length > 0 && 
                 <div className='sap-div-table-aquisicao'>
                   <div className="sap-table-title">
@@ -346,7 +362,7 @@ function VizualizarAquisicao(){
                   </div>
                   <ToolkitProvider
                     keyField ='id'
-                    data={empenhos}
+                    data={entrega}
                     columns={columns_entrega}
                   >
                     {
@@ -389,7 +405,7 @@ function VizualizarAquisicao(){
                         )
                     }
                 </ToolkitProvider>
-              </div>
+              </div>*/
               }
       </div>
       
