@@ -30,24 +30,28 @@ function AddCobranca() {
     setValorTotal(valorT);
   }
   function onSubmit(values){
+    var fornecedor;
+    empenhos.map(empenho => {
+      if (empenho.id == values.Empenho) {
+        fornecedor =  empenho.fornecedor.id;
+      }
+    });
     const bodyParameters ={
-      numeroEmpenho: values.NumeroEmpenho,
-      /*dataEmissao: values.DataEmissao,*/
-      valorTotalNE: valorTotal,
-      tipoEmpenho: values.TipoEmpenho,
-      dataInclusao: values.DataInclusao,
-      dataEnvio: values.DataEnvio,
+      via: values.Via,
+      dataHora: values.DataHora,
+      contato: values.ContatoUtilizado,
+      comprovacao: values.Comprovacao,
+      resposta: respostaEmpresa,
+      dataResposta: values.DataResposta,
+      observacao: values.Observacoes,
+      empenho: {
+        id: values.Empenho
+      },
       fornecedor: {
-        id: values.Fornecedor
-      },
-      item: {
-        id: values.Item
-      },
-      aquisicao: {
-        id: parseInt(id)
-      },
+        id: fornecedor
+      }
     }
-    api.post('empenhos', bodyParameters, config).then(function () { 
+    api.post('cobrancas', bodyParameters, config).then(function () { 
       alert(values.NumeroEmpenho+' Cadastrado Com Sucesso!');
       navigateTo('/colic/aquisicoes/'+id)
     }).catch(function (error) {
@@ -63,17 +67,15 @@ function AddCobranca() {
       <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => navigateTo('/colic/aquisicoes/'+id)}/>
       <div className="sap-div-modal">
       <Formik
-
           onSubmit={onSubmit}
           initialValues={{
-            NumeroEmpenho: '',
-            DataEmissao: '',
-            ValorTotalNE: '',
-            TipoEmpenho: '',
-            DataInclusao: '',
-            DataEnvio: '',
-            Fornecedor: 0,
-            Item: 0
+            Empenho: 0,
+            Via: '',
+            ContatoUtilizado: '',
+            DataResposta: '',
+            DataHora: '',
+            Comprovacao: '',
+            Observacoes: '',
           }}
           enableReinitialize
         >
@@ -89,7 +91,7 @@ function AddCobranca() {
                   <div className="sap-form-button-select sap-form-button-select-margin-bot">
                     <Field
                       className={errors.Fornecedor && touched.Fornecedor ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                      name="Fornecedor" 
+                      name="Empenho" 
                       as="select">
                       <option value="null"></option>
                       {empenhos.map(empenhos => {
@@ -106,7 +108,7 @@ function AddCobranca() {
                     <div className="sap-form-button-select sap-form-button-select-margin-bot">
                       <Field
                         className={errors.TipoEmpenho && touched.TipoEmpenho ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                        name="TipoEmpenho" 
+                        name="Via" 
                         as="select">
                         <option value="null"></option>
                         <option value="LIGAÇÃO TELEFÔNICA">LIGAÇÃO TELEFÔNICA</option>
@@ -119,11 +121,11 @@ function AddCobranca() {
                     <Field
                     className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                     type="text"
-                    name='DataEmissao'
+                    name='ContatoUtilizado'
                     />
                     <div className='sap-form-container-input-row'>
                       <div className='sap-form-container-input-column sap-form-container-input-column-w60 '>
-                        <label ><span>A empresa respondeu ao e-mail confirmando o recebimento?</span></label>
+                        <label ><span>Recebimento Confirmado?</span></label>
                         <div className="sap-form-button-select">
                           <button 
                             type="button" 
@@ -141,14 +143,11 @@ function AddCobranca() {
                           </button>
                         </div>
                       </div>
-                      <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
-                        <label htmlFor='Celular'>⠀⠀⠀⠀⠀⠀</label>
-                          <Field
-                          className={errors.Celular && touched.Celular ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
-                          type="text"
-                          name='Celular'
-                          />
-                      </div>
+                      <Field
+                        className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                        type="date"
+                        name='DataResposta'
+                        />
                     </div>
                   </div>
                   
@@ -157,13 +156,13 @@ function AddCobranca() {
                     <Field
                     className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                     type="datetime-local"
-                    name='DataEmissao'
+                    name='DataHora'
                     />
                     <label>Comprovação</label>
                     <Field
                     className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                     type="text"
-                    name='DataEmissao'
+                    name='Comprovacao'
                     />
                   </div>
                 </div>
@@ -172,7 +171,7 @@ function AddCobranca() {
                   as='textarea'
                   className={errors.DescricaoItem && touched.DescricaoItem ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
                   type="textarea"
-                  name='DescricaoItem'
+                  name='Observacoes'
                 />
                 
                 <div className="form-footer">

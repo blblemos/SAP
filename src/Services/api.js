@@ -11,6 +11,11 @@ export function Config(){
     return {headers: { Authorization: token }};
 }
 
+export function ConfigTeste(){
+    const { token } = useContext(StoreContext);
+    return token;
+}
+
 export function SetarTokenNull(){
     const { setToken } = useContext(StoreContext);
     setToken(null);

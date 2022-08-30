@@ -4,22 +4,52 @@ import { useNavigate, useParams } from 'react-router-dom';
 import VMasker from "vanilla-masker";
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import {api, Config, SetarTokenNull} from '../../Services/api';
 import Schema from '../../Utils/ShemaItens';
+import useApi from '../../Services/useApi';
 
 import '../../Styles/form.css';
 
 function EditarItem(){
   const navigateTo = useNavigate();
   const {id} = useParams();
-  const config = Config();
   const [valorMedio, setValorMedio] = useState();
-  const [item,setItem] = useState({
-    NomeItem: '',
-    Catmat: '', 
-    ValorMedio: '',
-    DescricaoItem: '',
+  const [item, setItem] = useState({
+    nome: '',
+    catmat: '',
+    valorMed: '',
+    descricao: '',
   });
+  const [save] = useApi({
+    url: `/itens/${id}`,
+    method: 'put',
+    onCompleted: (response) => {
+      if (!response.error){
+        navigateTo('/colic/itens');
+      }
+    }
+  });
+  const [load] = useApi({
+    url: `/itens/${id}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setItem(response.data);
+    }
+  }
+  );
+
+  function onSubmit(values) {
+    var sendValues = {
+      id: values.id,
+      nome: values.nome,
+      catmat: values.catmat,
+      valorMed: valorMedio,
+      descricao: values.descricao,
+    };
+    save({
+      data: sendValues
+    });
+  };
+
   function onChange(vmed) {
     const valor_medio = VMasker.toMoney(vmed, {
       precision: 2,
@@ -28,40 +58,12 @@ function EditarItem(){
       unit: "R$"
     });
     setValorMedio(valor_medio);
-  }
+  };
+
   useEffect(() => {
-    api.get(`itens/${id}`, config).then((response) => {
-      setItem({
-        NomeItem: response.data.nome,
-        Catmat: response.data.catmat, 
-        ValorMedio: response.data.valorMed,
-        DescricaoItem: response.data.descricao,
-      });
-    }).catch(function (error){
-      if (error.response.status = 403) {
-        SetarTokenNull();
-      }
-    });
-  },[id]);
-  async function onSubmit(values) {
-      await api.put(`itens/${id}`,{
-        id: parseInt(id),
-        nome: values.NomeItem,
-        catmat: values.Catmat,
-        valorMed: valorMedio,
-        descricao: values.DescricaoItem
-      }, config).then(function () {
-        alert(values.NomeItem+' Editado Com Sucesso!');
-        navigateTo('/colic/itens');
-      }).catch(function (error) {
-        let msgError = '';
-        for (var index = 0; index < error.response.data.length; index++) {
-          msgError = msgError+error.response.data[index].message+'\n';
-        }
-        alert(msgError);
-      });
-    
-  }
+    load();
+  }, [id]);
+  
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -78,40 +80,40 @@ function EditarItem(){
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>EDITAR {item.NomeItem}</h1>
+                  <h1>EDITAR {item.nome}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
                     <label>Nome</label>
                     <Field
-                      className={errors.NomeItem && touched.NomeItem ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
+                      className={errors.nome && touched.nome ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
                       type="text"
-                      name='NomeItem'
+                      name='nome'
                     />
                     <label>Valor Médio</label>
                     <Field
-                      className={errors.ValorMedio && touched.ValorMedio ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.valorMed && touched.valorMed ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='ValorMedio'
+                      name='valorMed'
                       value={valorMedio}
-                      onBlur={onChange(values.ValorMedio)}
+                      onBlur={onChange(values.valorMed)}
                     />
                   </div>
                   <div className="form-elements-column">
                     <label>CATMAT</label>
                     <Field
-                      className={errors.Catmat && touched.Catmat ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      className={errors.catmat && touched.catmat ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
-                      name='Catmat' 
+                      name='catmat' 
                     />
                   </div>
                 </div>
                 <label>Descrição</label>
                     <Field
                       as='textarea'
-                      className={errors.DescricaoItem && touched.DescricaoItem ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
+                      className={errors.descricao && touched.descricao ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
                       type="textarea"
-                      name='DescricaoItem'
+                      name='descricao'
                     />
                 <div className="form-footer">
                   <button 
