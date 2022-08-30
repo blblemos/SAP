@@ -3,12 +3,17 @@ import {useContext} from 'react';
 import StoreContext from '../Components/Store/Context';
 
 export const api = axios.create({
-    baseURL: 'https://apiestagioifba.herokuapp.com'
+    baseURL: 'http://200.128.8.98:8080'
 });
 
 export function Config(){
     const { token } = useContext(StoreContext);
     return {headers: { Authorization: token }};
+}
+
+export function ConfigTeste(){
+    const { token } = useContext(StoreContext);
+    return token;
 }
 
 export function SetarTokenNull(){
