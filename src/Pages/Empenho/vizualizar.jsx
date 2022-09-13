@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {Formik, Field, Form} from 'formik';
 
 import {AiFillCloseCircle} from 'react-icons/ai';
 import {api, Config} from '../../Services/api';
@@ -7,8 +8,11 @@ import {api, Config} from '../../Services/api';
 function VizualizarEmpenho() {
   const {idAquisicao, idEmpenho} = useParams();
   const navigateTo = useNavigate();
-  const [itens,setItens] = useState([]);console.log(itens);
+  const [itens,setItens] = useState([]);
+  const [cobrancas,setCobrancas] = useState([]);
+  const [respostaEmpresa,setRespostaEmpresa] = useState(false);
   let config = {};
+  var countCobranca = 0;
   config = Config();
   const [empenho,setEmpenho] = useState({
     NumeroEmpenho: '',
@@ -31,6 +35,9 @@ function VizualizarEmpenho() {
         Fornecedor: response.data.fornecedor.nomeFantasia,
       });
       setItens(response.data.item);
+    });
+    api.get(`cobrancas/search?empenho=${empenho.NumeroEmpenho}`, config).then(response => {
+      setCobrancas(response.data); 
     });
   }, []);
   return (
@@ -110,7 +117,116 @@ function VizualizarEmpenho() {
           }
           
         </form>
+        {cobrancas.map(cobranca => {
+          
+          return ( 
+          <Formik
+          initialValues={{
+            Via: cobranca.via,
+            ContatoUtilizado: cobranca.contato,
+            DataResposta: cobranca.dataResposta,
+            DataHora: cobranca.dataHora,
+            Comprovacao: cobranca.comprovacao,
+            Observacoes: cobranca.observacao,
+          }}
+          enableReinitialize
+        >
+          {() => {
+            return(
+              <Form
+                className="sap-form-container"
+              >
+                <div className="form-title">
+                  <h1>Cobrança</h1>
+                </div>
+                <div className="form-elements">
+                  <div className="form-elements-column">
+                    <label>Via</label>
+                    <div className="sap-form-button-select sap-form-button-select-margin-bot">
+                      <Field
+                        className={'sap-form-select sap-form-input-disabled'} 
+                        disabled
+                        name="Via" 
+                        as="select">
+                        <option value="null"></option>
+                        <option value="LIGAÇÃO TELEFÔNICA">LIGAÇÃO TELEFÔNICA</option>
+                        <option value="E-MAIL"> E-MAIL</option>
+                        <option value="CORREIO">CORREIO</option>
+                        <option value="APLICATIVO DE MENSAGEM">APLICATIVO DE MENSAGEM</option>
+                      </Field>
+                    </div>
+                    <label>Contato Utilizado</label>
+                    <Field
+                    className={"sap-form-input-disabled form-input form-input-w100 "}  
+                    disabled
+                    type="text"
+                    name='ContatoUtilizado'
+                    />
+                    <div className='sap-form-container-input-row'>
+                      <div className='sap-form-container-input-column sap-form-container-input-column-w60 '>
+                        <label ><span>Recebimento Confirmado?</span></label>
+                        <div className="sap-form-button-select ">
+                          <button 
+                            type="button" 
+                            disabled
+                            className={respostaEmpresa ? 'sap-form-button sap-form-button-active sap-form-button-active-green' : 'sap-form-button'}
+                            onClick={() => setRespostaEmpresa(true)}
+                          >
+                            Sim
+                          </button>
+                          <button 
+                            type="button"
+                            disabled
+                            className={!respostaEmpresa ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
+                            onClick={() => setRespostaEmpresa(false)}
+                          >
+                            Não
+                          </button>
+                        </div>
+                      </div>
+                      <Field
+                        className={"sap-form-input-disabled form-input form-input-w100 "}  
+                        type="date"
+                        name='DataResposta'
+                        disabled
+                        />
+                    </div>
+                  </div>
+                  
+                  <div className="form-elements-column">
+                    <label>Data e Hora</label>
+                    <Field
+                    className={"form-input form-input-w100 sap-form-input-disabled"}  
+                    type="datetime-local"
+                    name='DataHora'
+                    disabled
+                    />
+                    <label>Comprovação</label>
+                    <Field
+                    className={"sap-form-input-disabled form-input form-input-w100 "}  
+                    type="text"
+                    name='Comprovacao'
+                    disabled
+                    />
+                  </div>
+                </div>
+                <label>Observações</label>
+                <Field
+                  as='textarea'
+                  className={"sap-form-input-disabled form-input form-input-textarea form-input-w100 "} 
+                  type="textarea"
+                  name='Observacoes'
+                  disabled
+                />
+              </Form>
+          )}
+          }
+          </Formik>
+          );
+        })}
+      
       </div>
+
     </div>
   );
 }
