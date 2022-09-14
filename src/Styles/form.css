@@ -296,6 +296,7 @@ input[type=datetime-local]{
 
 .sap-div-modal{
   display: flex;
+  flex-direction: column;
   position: absolute;
   width: 100vw;
 }

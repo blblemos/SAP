@@ -52,7 +52,7 @@ function AddCobranca() {
       }
     }
     api.post('cobrancas', bodyParameters, config).then(function () { 
-      alert(values.NumeroEmpenho+' Cadastrado Com Sucesso!');
+      alert('Cobrança cadastrada Com Sucesso!');
       navigateTo('/colic/aquisicoes/'+id)
     }).catch(function (error) {
       let msgError = '';

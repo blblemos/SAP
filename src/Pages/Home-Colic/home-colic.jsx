@@ -8,7 +8,7 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import {RiEditBoxFill} from 'react-icons/ri';
 import {MdOutlineOpenInNew} from 'react-icons/md';
 
-import api from '../../Services/api';
+import useApi from '../../Services/useApi';
 import axios from 'axios';
 
 import '../../Styles/table.css';
@@ -17,7 +17,7 @@ import './home-colic.css';
 const { SearchBar } = Search;
 
 function HomeColic() {
-  const [setores,setSetores] = useState([]);
+  const [aquisicoes,setAquisicoes] = useState([]);
 
   /*useEffect(() => {
     api.get('posts').then(response => {
@@ -25,35 +25,42 @@ function HomeColic() {
     })
 }, []);*/
 
+const[load] = useApi({
+  url: '/aquisicoes',
+  method: 'get',
+  onCompleted: (response) => {
+    setAquisicoes(response.data);
+  }
+}
+); 
+
 useEffect(() => {
-  axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
-    setSetores(response.data);
-  })
+  load();
 }, []);
 
     const columns = [
       {
-        dataField: 'userId',
+        dataField: 'numeroProcesso',
         text: 'PROCESSO'
       },
       {
-        dataField: 'title',
+        dataField: '',
         text: 'FORNECEDOR'
       },
       {
-        dataField: 'userId',
+        dataField: 'objeto',
         text: 'OBJETO',
       },
       {
-        dataField: 'userId',
+        dataField: '',
         text: 'EMPENHO',
       },
       {
-        dataField: 'userId',
+        dataField: '',
         text: 'ENTREGA',
       },
       {
-        dataField: 'userId',
+        dataField: '',
         text: 'PAGAMENTO',
       },
       {
@@ -61,7 +68,7 @@ useEffect(() => {
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),
@@ -111,7 +118,7 @@ useEffect(() => {
           <div className='table-table'>
             <ToolkitProvider
               keyField ='id'
-              data={setores}
+              data={aquisicoes}
               columns={columns}
               search
             >
