@@ -26,7 +26,7 @@ function HomeColic() {
 }, []);*/
 
 const[load] = useApi({
-  url: '/aquisicoes',
+  url: '/views/home',
   method: 'get',
   onCompleted: (response) => {
     setAquisicoes(response.data);
@@ -40,11 +40,14 @@ useEffect(() => {
 
     const columns = [
       {
-        dataField: 'numeroProcesso',
-        text: 'PROCESSO'
+        dataField: 'numero_processo',
+        text: 'PROCESSO',
+        formatter: (row, rowIndex) => (
+          <a className='sap-table-link' href={rowIndex.linkProcesso} target="_blank">{row}</a>
+        ),
       },
       {
-        dataField: '',
+        dataField: 'razao_social',
         text: 'FORNECEDOR'
       },
       {
@@ -52,23 +55,23 @@ useEffect(() => {
         text: 'OBJETO',
       },
       {
-        dataField: '',
+        dataField: 'numero_empenho',
         text: 'EMPENHO',
       },
       {
-        dataField: '',
+        dataField: 'status_entrega',
         text: 'ENTREGA',
       },
       {
-        dataField: '',
+        dataField: 'status_pagamento',
         text: 'PAGAMENTO',
       },
       {
-        dataField: 'id',
+        dataField: 'aquisicao',
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row} title='Visualizar'><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),

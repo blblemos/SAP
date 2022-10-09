@@ -31,6 +31,9 @@ function ListaAquisicoes(){
       {
         dataField: 'numeroProcesso',
         text: 'PROCESSO',
+        formatter: (row, rowIndex) => (
+          <a className='sap-table-link' href={rowIndex.linkProcesso} target="_blank">{row}</a>
+        ),
       },
       {
         dataField: 'objeto',
@@ -49,7 +52,7 @@ function ListaAquisicoes(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row} title='Visualizar'><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),

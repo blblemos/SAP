@@ -96,6 +96,8 @@
 .sap-table-link{
   text-decoration: none;
   color: #09210E !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
 }
 
 .sap-div-table-link-icon{

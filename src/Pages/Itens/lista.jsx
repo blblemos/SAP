@@ -46,8 +46,8 @@ function ListaItem(){
       text: '',
       formatter: (row) => (
         <div>
-          <Link className='sap-table-link-icon' to={'/colic/editar/item/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-          <Link className='sap-table-link-icon' to={'/colic/item/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+          <Link className='sap-table-link-icon' to={'/colic/editar/item/'+row}><RiEditBoxFill size={25} color="#09210E" title="Editar"/></Link>
+          <Link className='sap-table-link-icon' to={'/colic/item/'+row}><MdOutlineOpenInNew size={25} color="#09210E" title="Visualizar"/></Link>
           <br />
         </div>
       ),

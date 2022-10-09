@@ -58,7 +58,7 @@ function VizualizarItem(){
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
-                    <label>Valor Médio</label>
+                    <label>Valor Unitário Médio</label>
                     <Field
                       className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"
@@ -67,7 +67,7 @@ function VizualizarItem(){
                     />
                   </div>
                   <div className="form-elements-column">
-                    <label>CATMAT</label>
+                    <label>CATMAT/CATSER</label>
                     <Field
                       className="form-input form-input-w100 sap-form-input-disabled"
                       type="text"

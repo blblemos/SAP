@@ -56,17 +56,19 @@ function Menu() {
           />
 
           <ItemMenu
-            nome='Servidores'
-            itens={[
-              {nomelink:'Cadastrar Servidor', link: '/colic/cadastrar/servidor'},
-              {nomelink:'Lista de Servidores', link: '/colic/servidores'}]}
-          />
-          <ItemMenu
             nome='Setores'
             itens={[
               {nomelink:'Cadastrar Setores', link: '/colic/cadastrar/setor'},
               {nomelink:'Lista de Setores', link: '/colic/setores'}]}
           />
+          
+          <ItemMenu
+            nome='Servidores'
+            itens={[
+              {nomelink:'Cadastrar Servidor', link: '/colic/cadastrar/servidor'},
+              {nomelink:'Lista de Servidores', link: '/colic/servidores'}]}
+          />
+          
           <ItemMenu
             nome='Itens'
             itens={[

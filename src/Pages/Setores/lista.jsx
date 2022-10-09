@@ -44,8 +44,8 @@ function ListaSetor(){
       text: '',
       formatter: (row) => (
         <div>
-          <Link className='sap-table-link-icon' to={'/colic/editar/setor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-          <Link className='sap-table-link-icon' to={'/colic/setor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+          <Link className='sap-table-link-icon' to={'/colic/editar/setor/'+row} title='Editar'><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <Link className='sap-table-link-icon' to={'/colic/setor/'+row} title='Visualizar'><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
           <br />
         </div>
       ),

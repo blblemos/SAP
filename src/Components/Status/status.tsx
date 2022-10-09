@@ -60,9 +60,12 @@ function Status({ onChangeModal, aquisicao, status} : props) {
                   <option value="Fase Planejamento">Fase Planejamento</option>
                   <option value="Enviado ao DEPAD">Enviado ao DEPAD</option>
                   <option value="Aguardando execução">Aguardando execução</option>
+                  <option value="Entrega Realizada">Entrega Realizada</option>
+                  <option value="Em processamento de almoxarifado">Em processamento de almoxarifado</option>
                   <option value="NF enviada ao Financeiro">NF enviada ao Financeiro</option>
                   <option value="Pagamento Efetuado">Pagamento Efetuado</option>
                   <option value="Concluído na Unidade COLIC.IRE e arquivado">Concluído na Unidade COLIC.IRE e arquivado</option>
+                  <option value=" Processo ou empenho cancelado"> Processo ou empenho cancelado</option>
                 </Field>
                 <div className="form-footer">
                   <button 

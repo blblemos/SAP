@@ -1,66 +1,93 @@
 import {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {Formik, Field, Form} from 'formik';
-import VMasker from "vanilla-masker";
 
-import {AiFillCloseCircle} from 'react-icons/ai';
-import {api, Config} from '../../Services/api';
+import {AiFillCloseCircle, AiOutlineLink} from 'react-icons/ai';
+import useApi from '../../Services/useApi';
+import AddLink from '../../Components/Add-Link/add-link';
+
+//Setando valores iniciais para cobrança(Quando é cadastro)
+const initialValue = {
+  Empenho: 0,
+  via: '',
+  contato: '',
+  dataResposta: '',
+  dataHora: '',
+  comprovacao: '',
+  observacao: '',
+  linkcomprovacao: ''
+}
 
 function AddCobranca() {
-  const {id, aquisicao} = useParams();
+  const {id, aquisicao, idCobranca} = useParams();
   const navigateTo = useNavigate();
-  const [valorTotal, setValorTotal] = useState('');
-  const config = Config();
   const [empenhos,setEmpenhos] = useState([]);
+  const [cobranca,setCobranca] = useState(initialValue);
   const [respostaEmpresa,setRespostaEmpresa] = useState(false);
-  useEffect(() => {
-    api.get(`empenhos/search?aquisicao=${aquisicao}`, config).then(response => { 
+  const [modalLink, setModalLink] = useState(false);
+  const [linkComprovacao, setLinkComprovacao] = useState('');
+  //Carregando Empenhos do processo
+  const [loadEmpenho] = useApi({
+    url: `/empenhos/search?aquisicao=${aquisicao}`,
+    method: 'get',
+    onCompleted: (response) => {
       setEmpenhos(response.data);
-    }).catch(function(error){
-      alert("O processo ainda não possui empenhos");
-    });
+    }
+  });
+  //Carregando cobrança(se houver)
+  const [loadCobranca] = useApi({
+    url: `/cobrancas/${idCobranca}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setCobranca(response.data);
+      setRespostaEmpresa(response.data.resposta);
+      setLinkComprovacao(response.data.linkcomprovacao);
+    }
+  });
+  //Salvando cobranca
+  const [save] = useApi({
+    url: idCobranca ? `/cobrancas/${idCobranca}` : `/cobrancas`,
+    method: idCobranca ? 'put' : 'post',
+    onCompleted: (response) => {
+      if (!response.error){
+        idCobranca ? alert(' Editado Com Sucesso!') : alert(' Cadastrado Com Sucesso!');
+        navigateTo('/colic/aquisicoes/'+aquisicao)
+      }
+    }
+  });
+  //Chamando carregamentos de empenhos e cobrança(editar)
+  useEffect(() => {
+    loadEmpenho();
+    if (idCobranca) {
+      loadCobranca();
+    };
   }, []);
-  function onChange(valor_total) {
-    const valorT = VMasker.toMoney(valor_total, {
-      precision: 2,
-      separator: ",",
-      delimiter: ".",
-      unit: "R$"
-    });
-    setValorTotal(valorT);
-  }
+
   function onSubmit(values){
     var fornecedor;
     empenhos.map(empenho => {
-      if (empenho.id == values.Empenho) {
+      if (empenho.id == values.empenho) {
         fornecedor =  empenho.fornecedor.id;
       }
     });
     const bodyParameters ={
-      via: values.Via,
-      dataHora: values.DataHora,
-      contato: values.ContatoUtilizado,
-      comprovacao: values.Comprovacao,
+      via: values.via,
+      dataHora: values.dataHora,
+      contato: values.contato,
       resposta: respostaEmpresa,
-      dataResposta: values.DataResposta,
-      observacao: values.Observacoes,
+      dataResposta: values.dataResposta,
+      observacao: values.observacao,
+      linkcomprovacao: linkComprovacao,
       empenho: {
-        id: values.Empenho
+        id: values.empenho
       },
       fornecedor: {
         id: fornecedor
       }
     }
-    api.post('cobrancas', bodyParameters, config).then(function () { 
-      alert('Cobrança cadastrada Com Sucesso!');
-      navigateTo('/colic/aquisicoes/'+id)
-    }).catch(function (error) {
-      let msgError = '';
-        for (var index = 0; index < error.response.data.length; index++) {
-          msgError = msgError+error.response.data[index].message+'\n';
-        }
-        alert(msgError);
-    })
+    save({
+      data: idCobranca ? {...bodyParameters, id: idCobranca} : bodyParameters
+    });
   }
   return (
     <div className="sap-container-modal">
@@ -68,15 +95,7 @@ function AddCobranca() {
       <div className="sap-div-modal">
       <Formik
           onSubmit={onSubmit}
-          initialValues={{
-            Empenho: 0,
-            Via: '',
-            ContatoUtilizado: '',
-            DataResposta: '',
-            DataHora: '',
-            Comprovacao: '',
-            Observacoes: '',
-          }}
+          initialValues={cobranca}
           enableReinitialize
         >
           {({errors,touched,values}) => {
@@ -84,14 +103,19 @@ function AddCobranca() {
               <Form
                 className="sap-form-container"
               >
-                <div className="form-title">
-                  <h1>Cobrança</h1>
-                </div>
+                {modalLink &&
+                //Carregando modal de Link
+                  <AddLink
+                    link={linkComprovacao}
+                    onChangeLink={setLinkComprovacao}
+                    onChangeModalLink={setModalLink}
+                  />
+                }
                 <label>Empenho</label>
                   <div className="sap-form-button-select sap-form-button-select-margin-bot">
                     <Field
                       className={errors.Fornecedor && touched.Fornecedor ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                      name="Empenho" 
+                      name="empenho" 
                       as="select">
                       <option value="null"></option>
                       {empenhos.map(empenhos => {
@@ -108,7 +132,7 @@ function AddCobranca() {
                     <div className="sap-form-button-select sap-form-button-select-margin-bot">
                       <Field
                         className={errors.TipoEmpenho && touched.TipoEmpenho ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                        name="Via" 
+                        name="via" 
                         as="select">
                         <option value="null"></option>
                         <option value="LIGAÇÃO TELEFÔNICA">LIGAÇÃO TELEFÔNICA</option>
@@ -121,7 +145,7 @@ function AddCobranca() {
                     <Field
                     className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                     type="text"
-                    name='ContatoUtilizado'
+                    name='contato'
                     />
                     <div className='sap-form-container-input-row'>
                       <div className='sap-form-container-input-column sap-form-container-input-column-w60 '>
@@ -146,7 +170,7 @@ function AddCobranca() {
                       <Field
                         className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                         type="date"
-                        name='DataResposta'
+                        name='dataResposta'
                         />
                     </div>
                   </div>
@@ -156,14 +180,17 @@ function AddCobranca() {
                     <Field
                     className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                     type="datetime-local"
-                    name='DataHora'
+                    name='dataHora'
                     />
                     <label>Comprovação</label>
-                    <Field
-                    className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
-                    type="text"
-                    name='Comprovacao'
-                    />
+                    <div className="form-div-input-link">
+                      <Field
+                      className={errors.DataEmissao && touched.DataEmissao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      type="text"
+                      name='comprovacao'
+                      />
+                      <AiOutlineLink className="form-icon-link" size={30} color="#09210E" onClick={() => setModalLink(true)}/>
+                    </div>
                   </div>
                 </div>
                 <label>Observações</label>
@@ -171,7 +198,7 @@ function AddCobranca() {
                   as='textarea'
                   className={errors.DescricaoItem && touched.DescricaoItem ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
                   type="textarea"
-                  name='Observacoes'
+                  name='observacao'
                 />
                 
                 <div className="form-footer">
