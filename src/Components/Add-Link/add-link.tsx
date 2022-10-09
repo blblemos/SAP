@@ -1,5 +1,4 @@
 import {AiFillCloseCircle} from 'react-icons/ai';
-import {useState} from 'react';
 
 type props = {
   link: string;
@@ -13,7 +12,7 @@ function AddLink({onChangeLink, onChangeModalLink, link} : props) {
       <AiFillCloseCircle className="sap-close-modal" size={30} color="#CE1218" onClick={() => onChangeModalLink(false)}/>
       <div className="sap-div-modal-mini">
         <div className="form-elements-column w-100">
-          <label>Link do Processo</label>
+          <label>Link</label>
           <input
             className={"form-input form-input-w100"} 
             type="text"
@@ -21,6 +20,14 @@ function AddLink({onChangeLink, onChangeModalLink, link} : props) {
             value={link}
             onChange={e => onChangeLink(e.target.value)}
           />
+          <div className="form-footer">
+            <button 
+              onClick={() => onChangeModalLink(false)} 
+              className="form-btn">
+                Salvar
+            </button>
+            <div className="clear"></div>
+          </div>
         </div>
       </div>
     </div>

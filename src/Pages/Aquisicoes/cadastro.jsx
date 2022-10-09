@@ -141,8 +141,9 @@ function CadastrarAquisicao(){
                         name="Tipo" 
                         as="select">
                         <option value="null"></option>
-                        <option value="Compra">Compra</option>
+                        <option value="Material">Material</option>
                         <option value="Serviço">Serviço</option>
+                        <option value="Obra">Obra</option>
                       </Field>
                     </div>
                     <label>Orçamento</label>

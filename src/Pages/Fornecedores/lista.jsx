@@ -83,8 +83,8 @@ function ListaFornecedor(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-            <Link className='sap-table-link-icon' to={'/colic/vizualizar/fornecedor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/editar/fornecedor/'+row} title='Editar'><RiEditBoxFill size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/vizualizar/fornecedor/'+row} title='Visualizar'><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),

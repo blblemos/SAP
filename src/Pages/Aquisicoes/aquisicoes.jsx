@@ -95,8 +95,8 @@ function VizualizarAquisicao(){
       api.delete(`empenhos/${idEmpenho}`, config).then(response => { 
         alert("Empenho deletado com sucesso!!");
         window.location.reload();
-      }).catch(function(error){
-        alert("O processo ainda não possui empenhos");
+      }).catch(function(error){console.log(error);
+        alert("Não foi possível deletar o empenho");
       });
     }
   }
@@ -107,7 +107,7 @@ function VizualizarAquisicao(){
       dataField: 'numeroEmpenho',
       text: 'Empenho',
       formatter: (row, rowIndex) => (
-        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
+        <Link className='sap-table-link' to={'/colic/empenho/'+id+'/'+rowIndex.id+'/'+rowIndex.numeroEmpenho}>{row}</Link>
       ),
     },
     {
@@ -126,8 +126,8 @@ function VizualizarAquisicao(){
       text: '',
       formatter: (row) => (
         <div className='sap-div-table-link-icon'>
-          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-          <div className='sap-table-link-icon'onClick={() => onClickDeleteEmpenho(row)}><MdDelete size={25} color="#09210E"/></div>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row} title='Editar'><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <div className='sap-table-link-icon'onClick={() => onClickDeleteEmpenho(row)} title='Deletar'><MdDelete size={25} color="#09210E"/></div>
           <br />
         </div>
       ),
@@ -259,7 +259,7 @@ function VizualizarAquisicao(){
                     <label>Data de abertura</label>
                     <input
                       className="form-input form-input-w100 sap-form-input-disabled"
-                      type="text"
+                      type="date"
                       value={aquisicao.data}
                       disabled 
                     />

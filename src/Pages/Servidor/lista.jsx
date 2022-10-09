@@ -41,8 +41,8 @@ function ListaServidor(){
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/editar/servidor/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
-            <Link className='sap-table-link-icon' to={'/colic/servidor/'+row}><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/editar/servidor/'+row} title='Editar'><RiEditBoxFill size={25} color="#09210E"/></Link>
+            <Link className='sap-table-link-icon' to={'/colic/servidor/'+row} title='Visualizar'><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
             <br />
           </div>
         ),

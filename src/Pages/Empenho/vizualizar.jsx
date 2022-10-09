@@ -1,69 +1,111 @@
 import {useState, useEffect} from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {Formik, Field, Form} from 'formik';
-
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import {RiEditBoxFill} from 'react-icons/ri';
+import { MdDelete} from 'react-icons/md';
 import {AiFillCloseCircle} from 'react-icons/ai';
-import {api, Config} from '../../Services/api';
+import useApi from '../../Services/useApi';
+
+//Setando valores iniciais para empenho(Não percisa alterar pq nao tem função, só não conseguir fazer funcionar sem)
+const initialValue = {
+  numeroEmpenho: '',
+  dataEmissao: '',
+  valorTotalNE: '',
+  tipoEmpenho: '',
+  dataInclusao: '',
+  dataEnvio: '',
+  fornecedor: 0,
+  item: [{
+    id: ''
+  }]
+}
 
 function VizualizarEmpenho() {
-  const {idAquisicao, idEmpenho} = useParams();
+  const {idAquisicao, idEmpenho, numeroEmpenho} = useParams();
   const navigateTo = useNavigate();
-  const [itens,setItens] = useState([]);
   const [cobrancas,setCobrancas] = useState([]);
-  const [respostaEmpresa,setRespostaEmpresa] = useState(false);
-  let config = {};
-  var countCobranca = 0;
-  config = Config();
-  const [empenho,setEmpenho] = useState({
-    NumeroEmpenho: '',
-    DataEmissao: '',
-    ValorTotalNE: '',
-    TipoEmpenho: '',
-    DataInclusao: '',
-    DataEnvio: '',    
-    Fornecedor: '',
-    });
+  const [numeroAquisicao,setNumeroAquisicao] = useState('');
+  const [empenho,setEmpenho] = useState(initialValue);
+  //Carregando empenho da API
+  const [loadEmpenho] = useApi({
+    url: `/empenhos/${idEmpenho}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setEmpenho(response.data);
+    }
+  });
+  //Carregando cobranças da API
+  const [loadCobranca] = useApi({
+    url: `cobrancas/search?empenho=${numeroEmpenho}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setCobrancas(response.data);
+    }
+  });
+  //Carregando numero da aquisicao da API
+  const [loadAquisicao] = useApi({
+    url: `/aquisicoes/${idAquisicao}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setNumeroAquisicao(response.data.numeroAquisicao);
+    }
+  });
+  //Carregando deletar cobrança
+  const [deletarCobranca] = useApi({
+    method: 'delete',
+    onCompleted: (response) => {
+      alert('Deletado com sucesso!');
+      window.location.reload();
+    }
+  });
+  //Chamando funções de carregamento
   useEffect(() => {
-    api.get(`empenhos/${idEmpenho}`, config).then(response => {
-      setEmpenho({
-        NumeroEmpenho: response.data.numeroEmpenho,
-        DataEmissao: response.data.dataEmissao,
-        ValorTotalNE: response.data.valorTotalNE,
-        TipoEmpenho: response.data.tipoEmpenho,
-        DataInclusao: response.data.dataInclusao,
-        DataEnvio: response.data.dataEnvio,    
-        Fornecedor: response.data.fornecedor.nomeFantasia,
-      });
-      setItens(response.data.item);
-    });
-    api.get(`cobrancas/search?empenho=${empenho.NumeroEmpenho}`, config).then(response => {
-      setCobrancas(response.data); 
-    });
-  }, []);
+    loadEmpenho();
+    loadCobranca();
+    loadAquisicao(); 
+  }, [idEmpenho]);
+
+  //Deleta Cobrança
+  function onClickDeleteCobranca(idCobranca){
+    if (window.confirm("Tem certeza que deseja deletar a cobrança?") == true) {
+      deletarCobranca({url: `/cobrancas/${idCobranca}`});
+      };
+    }
+  
   return (
     <div className="sap-container-modal">
       <AiFillCloseCircle className="sap-close-modal" size={30} color="#09210E" onClick={() => navigateTo('/colic/aquisicoes/'+idAquisicao)}/>
       <div className="sap-div-modal">
         <form className="sap-form-container">
           <div className="form-title">
-            <h1>Empenho Nº {empenho.NumeroEmpenho}</h1>
+            <h1>Empenho</h1>
           </div>
           <div className="form-elements">
             <div className="form-elements-column">
+              <label>Empenho Nº</label>
+              <a
+                className="form-input form-input-w100 sap-form-input-disabled form-input-a"
+                href={empenho.linkEmpenho}
+                target="_blank"
+              >{empenho.numeroEmpenho}</a>
               <label>Valor Total da NE</label>
               <input
                 className="form-input form-input-w100 sap-form-input-disabled"
                 type="text"
-                value={empenho.ValorTotalNE}
+                value={empenho.valorTotalNE}
                 disabled 
               />
-              <div className="sap-form-container-input-row">
-              </div>
               <label>Data de Inclusão da NE pela COFIN no SEI</label>
               <input
                 className="form-input form-input-w100 sap-form-input-disabled"
                 type="date"
-                value={empenho.DataInclusao}
+                value={empenho.dataInclusao}
+                disabled 
+              />
+              <label>Data Confirmação</label>
+              <input
+                className="form-input form-input-w100 sap-form-input-disabled"
+                type="date"
+                value={empenho.dataConfirmacao}
                 disabled 
               />
             </div>
@@ -72,7 +114,7 @@ function VizualizarEmpenho() {
               <input
                 className="form-input form-input-w100 sap-form-input-disabled"
                 type="date"
-                value={empenho.DataEmissao}
+                value={empenho.dataEmissao}
                 disabled 
               />
               <label>Tipo do Empenho</label>
@@ -80,7 +122,7 @@ function VizualizarEmpenho() {
                 <input
                   className="form-input form-input-w100 sap-form-input-disabled"
                   type="text"
-                  value={empenho.TipoEmpenho}
+                  value={empenho.tipoEmpenho}
                   disabled 
                 />
                 
@@ -89,7 +131,21 @@ function VizualizarEmpenho() {
               <input
                 className="form-input form-input-w100 sap-form-input-disabled"
                 type="date"
-                value={empenho.DataEnvio}
+                value={empenho.dataEnvio}
+                disabled 
+              />
+              <label>Data Contagem</label>
+              <input
+                className="form-input form-input-w100 sap-form-input-disabled"
+                type="date"
+                value={empenho.dataContagem}
+                disabled 
+              />
+              <label>Dias para Contagem</label>
+              <input
+                className="form-input form-input-w100 sap-form-input-disabled"
+                type="number"
+                value={empenho.dias}
                 disabled 
               />
             </div>
@@ -99,11 +155,11 @@ function VizualizarEmpenho() {
             <input
               className="form-input form-input-w100 sap-form-input-disabled"
               type="text"
-              value={empenho.Fornecedor}
+              value={empenho.fornecedor.razaoSocial}
               disabled />
           </div>
           <label>Item</label>{
-            itens.map(item => {
+            empenho.item.map(item => {
               return (
                 <div className="sap-form-button-select sap-form-button-select-margin-bot">
                   <input
@@ -117,51 +173,32 @@ function VizualizarEmpenho() {
           }
           
         </form>
-        {cobrancas.map(cobranca => {
-          
-          return ( 
-          <Formik
-          initialValues={{
-            Via: cobranca.via,
-            ContatoUtilizado: cobranca.contato,
-            DataResposta: cobranca.dataResposta,
-            DataHora: cobranca.dataHora,
-            Comprovacao: cobranca.comprovacao,
-            Observacoes: cobranca.observacao,
-          }}
-          enableReinitialize
-        >
-          {() => {
-            return(
-              <Form
-                className="sap-form-container"
-              >
+        { 
+          //Carregando cobranças(Se houver)
+          cobrancas.length > 0 && 
+          cobrancas.map(cobrancas => {
+            return (
+              <form className="sap-form-container">
                 <div className="form-title">
-                  <h1>Cobrança</h1>
+                  <h1>
+                    Cobrança
+                    <Link className='' to={`/colic/cadastrar/cobranca/${idAquisicao}/${numeroAquisicao}/${cobrancas.id}`}>
+                      <RiEditBoxFill 
+                        size={25} 
+                        color="#09210E"
+                        className="sap-form-icon-title"
+                      />
+                    </Link>
+                    <MdDelete className="sap-form-icon-title" size={25} color="#CE1218" onClick={() => onClickDeleteCobranca(cobrancas.id)}/>
+                    
+                  </h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
                     <label>Via</label>
-                    <div className="sap-form-button-select sap-form-button-select-margin-bot">
-                      <Field
-                        className={'sap-form-select sap-form-input-disabled'} 
-                        disabled
-                        name="Via" 
-                        as="select">
-                        <option value="null"></option>
-                        <option value="LIGAÇÃO TELEFÔNICA">LIGAÇÃO TELEFÔNICA</option>
-                        <option value="E-MAIL"> E-MAIL</option>
-                        <option value="CORREIO">CORREIO</option>
-                        <option value="APLICATIVO DE MENSAGEM">APLICATIVO DE MENSAGEM</option>
-                      </Field>
-                    </div>
+                    <input className="sap-form-input-disabled form-input form-input-w100" type="text" disabled value={cobrancas.via} />
                     <label>Contato Utilizado</label>
-                    <Field
-                    className={"sap-form-input-disabled form-input form-input-w100 "}  
-                    disabled
-                    type="text"
-                    name='ContatoUtilizado'
-                    />
+                    <input className="sap-form-input-disabled form-input form-input-w100" type="text" disabled value={cobrancas.contato} />
                     <div className='sap-form-container-input-row'>
                       <div className='sap-form-container-input-column sap-form-container-input-column-w60 '>
                         <label ><span>Recebimento Confirmado?</span></label>
@@ -169,62 +206,39 @@ function VizualizarEmpenho() {
                           <button 
                             type="button" 
                             disabled
-                            className={respostaEmpresa ? 'sap-form-button sap-form-button-active sap-form-button-active-green' : 'sap-form-button'}
-                            onClick={() => setRespostaEmpresa(true)}
+                            className={cobrancas.resposta ? 'sap-form-button sap-form-button-active sap-form-button-active-green' : 'sap-form-button'}
                           >
                             Sim
                           </button>
                           <button 
                             type="button"
                             disabled
-                            className={!respostaEmpresa ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
-                            onClick={() => setRespostaEmpresa(false)}
+                            className={!cobrancas.resposta ? 'sap-form-button sap-form-button-active sap-form-button-active-red' : 'sap-form-button'}
                           >
                             Não
                           </button>
                         </div>
                       </div>
-                      <Field
-                        className={"sap-form-input-disabled form-input form-input-w100 "}  
-                        type="date"
-                        name='DataResposta'
-                        disabled
-                        />
+                      <input className="sap-form-input-disabled form-input form-input-w100 " type="date" disabled value={cobrancas.dataResposta} />
                     </div>
                   </div>
-                  
                   <div className="form-elements-column">
                     <label>Data e Hora</label>
-                    <Field
-                    className={"form-input form-input-w100 sap-form-input-disabled"}  
-                    type="datetime-local"
-                    name='DataHora'
-                    disabled
-                    />
+                    <input className="sap-form-input-disabled form-input form-input-w100" type="datetime-local" disabled value={cobrancas.dataHora} />
                     <label>Comprovação</label>
-                    <Field
-                    className={"sap-form-input-disabled form-input form-input-w100 "}  
-                    type="text"
-                    name='Comprovacao'
-                    disabled
-                    />
+                    <a
+                        className="form-input form-input-w100 sap-form-input-disabled form-input-a"
+                        href={cobrancas.linkcomprovacao}
+                        target="_blank"
+                      >{cobrancas.comprovacao}</a>
                   </div>
                 </div>
                 <label>Observações</label>
-                <Field
-                  as='textarea'
-                  className={"sap-form-input-disabled form-input form-input-textarea form-input-w100 "} 
-                  type="textarea"
-                  name='Observacoes'
-                  disabled
-                />
-              </Form>
-          )}
-          }
-          </Formik>
-          );
-        })}
-      
+                <input type="textarea" disabled className="sap-form-input-disabled form-input form-input-textarea form-input-w100 " value={cobrancas.observacao}/>
+              </form>
+            );
+          })
+        }
       </div>
 
     </div>

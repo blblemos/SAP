@@ -73,7 +73,7 @@ function CadastrarItem(){
                       type="text"
                       name='nome'
                     />
-                    <label>Valor Médio</label>
+                    <label>Valor Unitário Médio</label>
                     <Field
                       className={errors.valorMed && touched.valorMed ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
@@ -83,7 +83,7 @@ function CadastrarItem(){
                     />
                   </div>
                   <div className="form-elements-column">
-                    <label>CATMAT</label>
+                    <label>CATMAT/CATSER</label>
                     <Field
                       className={errors.catmat && touched.catmat ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
