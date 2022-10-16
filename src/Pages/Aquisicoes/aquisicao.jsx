@@ -1,108 +1,111 @@
 import {useState, useEffect} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
-import VMasker from "vanilla-masker";
 import {AiOutlineLink } from 'react-icons/ai';
 import { mask as masker, unMask } from "remask";
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
-import {api, Config} from '../../Services/api';
+import useApi from '../../Services/useApi';
 import Schema from '../../Utils/ShemaAquisicao';
 import AddLink from '../../Components/Add-Link/add-link';
+import{setValor} from '../../Utils/Function';
 
 import '../../Styles/form.css';
 
-function EditarAquisicao(){
+//Setando valores iniciais para aquisicao(Quando é cadastro)
+const initialValue = {
+  servidor: 0,
+  objeto: '',
+  valorTotal: '',
+  numeroProcesso: '',
+  data: '',
+  tipo: '',
+  modalidade: '',
+  pac: '',
+  recExtraOrc: false,
+  anotacoes: '',
+  orcamento: ''
+};
+
+function Aquisicao(){
   const navigateTo = useNavigate();
-  const config = Config();
   const {id} = useParams();
-  const [valorTotal, setValorTotal] = useState();
+  const [valorTotalThis, setValorTotalThis] = useState();
   const [servidor,setServidor] = useState([]);
   const [rec_Extra, setRec_Extra] = useState(false);
   const [modalLink, setModalLink] = useState(false);
   const [linkProcesso, setLinkProcesso] = useState('');
-  const [numeroAquisicao, setNumeroAquisicao] = useState('');
-  const [status, setStatus] = useState('');
-  const [aquisicao, setAquisicao] = useState({
-    Solicitante: 0,
-    Objeto: '',
-    ValorTotal: '',
-    NomeroProcesso: '',
-    Data: '',
-    Tipo: '',
-    Modalidade: '',
-    Pac: '',
-    RecExtraOrc: false,
-    Anotações: '',
-    Orcamento: ''
-  })
-  function onChange(valor_total) {
-    const valorT = VMasker.toMoney(valor_total, {
-      precision: 2,
-      separator: ",",
-      delimiter: ".",
-      unit: "R$"
-    });
-    setValorTotal(valorT);
-  }
-  useEffect(() => {
-    api.get(`servidores`, config).then(response => {
-      setServidor(response.data);
-    });
-    api.get(`aquisicoes/${id}`, config).then(response => {
-      setAquisicao({
-        Solicitante: response.data.servidor.id,  
-        Objeto: response.data.objeto,  
-        ValorTotal: response.data.valorTotal,  
-        NomeroProcesso: response.data.numeroProcesso,  
-        Data: response.data.data,  
-        Tipo: response.data.tipo,  
-        Modalidade: response.data.modalidade,  
-        Pac: response.data.pac.toString(),  
-        RecExtraOrc: response.data.recExtraOrc,  
-        Anotações: response.data.anotacoes,  
-        Orcamento: response.data.orcamento,  
-      });
+  const [aquisicao, setAquisicao] = useState(initialValue);
+
+ //Carregando aquisicao se houver
+  const [loadAquisicao] = useApi({
+    url: `/aquisicoes/${id}`,
+    method: 'get',
+    onCompleted: (response) => { 
+      setRec_Extra(response.data.recExtraOrc);
       setLinkProcesso(response.data.linkProcesso);
-      setNumeroAquisicao(response.data.numeroAquisicao);
-      setStatus(response.data.status);
-    });
+      setAquisicao(response.data);
+    }
+  });
+
+ //Carregando servidor
+  const [loadServidor] = useApi({
+  url: `/servidores`,
+  method: 'get',
+  onCompleted: (response) => { 
+    setServidor(response.data);
+  }
+  });
+
+  //Salvando aquisicão
+  const [save] = useApi({
+    url: id ? `/aquisicoes/${id}` : `/aquisicoes`,
+    method: id ? 'put' : 'post',
+    onCompleted: (response) => {
+      if (!response.error){
+        id ? alert(' Editado Com Sucesso!') : alert(' Cadastrado Com Sucesso!');
+        navigateTo('/colic/aquisicoes');
+      }
+    }
+  });
+
+  //Formatando Valor em Reais
+  function onChange(valor_total) {
+    setValorTotalThis(setValor(valor_total));
+  };
+
+  // Chamando carregamento do servidor
+  useEffect(() => {
+    loadServidor();
+
+    if (id) {
+      loadAquisicao();
+    }
   }, []);
-  async function onSubmit(values) {
+
+  function onSubmit(values) {
     if (linkProcesso === '') {
       alert('Coloque o link do processo para continuar!');
     }else{
-      const bodyParameters = {
-        id: id,
-        servidor: {
-          id: parseInt(values.Solicitante)
-        },
-        valorTotal: valorTotal,
-        numeroProcesso: values.NomeroProcesso,
-        linkProcesso: linkProcesso,
-        data: values.Data,
-        orcamento: values.Orcamento,
-        objeto: values.Objeto,
-        tipo: values.Tipo,
-        modalidade: values.Modalidade,
-        pac: parseInt(values.Pac),
-        recExtraOrc: rec_Extra,
-        anotacoes: values.Anotações,
-        numeroAquisicao: numeroAquisicao,
-        status: status,
-      }; 
-      await api.put(`aquisicoes/${id}`,bodyParameters, config).then(function () {
-        alert('Editado Com Sucesso!');
-        navigateTo('/colic/aquisicoes');
-      }).catch(function (error) {
-        let msgError = '';
-        for (var index = 0; index < error.response.data.length; index++) {
-          msgError = msgError+error.response.data[index].message+'\n';
-        }
-        alert(msgError);
+      aquisicao.valorTotal = valorTotalThis;
+      aquisicao.recExtraOrc = rec_Extra;
+      aquisicao.objeto = values.objeto;
+      aquisicao.numeroProcesso = values.numeroProcesso;
+      aquisicao.tipo = values.tipo;
+      aquisicao.orcamento = values.orcamento;
+      aquisicao.data = values.data;
+      aquisicao.modalidade = values.modalidade;
+      aquisicao.pac = values.pac;
+      aquisicao.anotacoes = values.anotacoes;
+      aquisicao.servidor = {
+        id: values.servidor.id
+      }
+      console.log(aquisicao);
+      save({
+        data: aquisicao
       });
     }
-  }
+  };
   return (
     <div className="sap-container">
       <NavbarMenu />
@@ -124,16 +127,16 @@ function EditarAquisicao(){
                     onChangeLink={setLinkProcesso}
                     onChangeModalLink={setModalLink}
                   />
-                };
+                }
                 
                 <div className="form-title">
-                  <h1>EDITAR AQUISIÇÃO {numeroAquisicao}</h1>
+                  <h1>{id ? 'Editar Aquisição' : 'Cadastrar Aquisição'}</h1>
                 </div>
                 <label>Solicitante</label>
                 <div className="sap-form-button-select sap-form-button-select-margin-bot">
                   <Field
-                    className={errors.Solicitante && touched.Solicitante ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                    name="Solicitante" 
+                    className={errors.solicitante && touched.solicitante ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
+                    name="servidor.id" 
                     as="select">
                     <option value="null"></option>
                     {servidor.map(servidor => {
@@ -148,37 +151,38 @@ function EditarAquisicao(){
                   <div className="form-elements-column">
                     <label>Objeto</label>
                     <Field
-                      className={errors.Objeto && touched.Objeto ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
+                      className={errors.objeto && touched.objeto ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "} 
                       type="text"
-                      name='Objeto'
+                      name='objeto'
                     />
                     <label>Processo SEI</label>
                     <div className="form-div-input-link">
                       <Field
-                        className={errors.NomeroProcesso && touched.NomeroProcesso ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                        className={errors.numeroProcesso && touched.numeroProcesso ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                         type="text"
-                        name='NomeroProcesso'
+                        name='numeroProcesso'
                         maxLength = {20}
-                        value={masker(unMask(values.NomeroProcesso),["99999.999999/9999-99"])}
+                        value={masker(unMask(values.numeroProcesso),["99999.999999/9999-99"])}
                       />
                       <AiOutlineLink className="form-icon-link" size={30} color="#09210E" onClick={() => setModalLink(true)}/>
                     </div>
                     <label>Tipo</label>
                     <div className="sap-form-button-select sap-form-button-select-margin-bot">
                       <Field
-                        className={errors.Tipo && touched.Tipo ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                        name="Tipo" 
+                        className={errors.tipo && touched.tipo ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
+                        name="tipo" 
                         as="select">
                         <option value="null"></option>
-                        <option value="Compra">Compra</option>
+                        <option value="Material">Material</option>
                         <option value="Serviço">Serviço</option>
+                        <option value="Obra">Obra</option>
                       </Field>
                     </div>
                     <label>Orçamento</label>
                     <div className="sap-form-button-select sap-form-button-select-margin-bot">
                       <Field
-                        className={errors.Orcamento && touched.Orcamento ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                        name="Orcamento" 
+                        className={errors.orcamento && touched.orcamento ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
+                        name="orcamento" 
                         as="select">
                         <option value="null"></option>
                         <option value="Custeio">Custeio</option>
@@ -189,23 +193,23 @@ function EditarAquisicao(){
                   <div className="form-elements-column">
                     <label>Valor Total</label>
                     <Field
-                    className={errors.ValorTotal && touched.ValorTotal ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                    className={errors.valorTotal && touched.valorTotal ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                     type="text"
-                    name='ValorTotal'
-                    value={valorTotal}
-                    onBlur={onChange(values.ValorTotal)}
+                    name='valorTotal'
+                    value={valorTotalThis}
+                    onBlur={onChange(values.valorTotal)}
                     />
                     <label>Data de Abertura</label>
                     <Field
-                    className={errors.Data && touched.Data ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
-                    type="date"
-                    name='Data'
+                      className={errors.data && touched.data ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      type="date"
+                      name='data'
                     />
                     <label>Modalidade</label>
                     <div className="sap-form-button-select sap-form-button-select-margin-bot">
                       <Field
-                        className={errors.Modalidade && touched.Modalidade ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
-                        name="Modalidade" 
+                        className={errors.modalidade && touched.modalidade ? 'sap-form-select sap-form-select-error' : 'sap-form-select'} 
+                        name="modalidade" 
                         as="select">
                         <option value="null"></option>
                         <option value="Dispensa">Dispensa</option>
@@ -218,13 +222,13 @@ function EditarAquisicao(){
                     <div className='sap-form-container-input-row'>
                       <div className='sap-form-container-input-column sap-form-container-input-column-w60'>
                         <label htmlFor='Celular'>Pac</label>
-                          <Field
-                          className={errors.Pac && touched.Pac ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
-                          type="text"
-                          name='Pac'
-                          maxLength = {4}
-                          value={masker(unMask(values.Pac),["9999"])}
-                          />
+                        <Field
+                        className={errors.pac && touched.pac ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                        type="text"
+                        name='pac'
+                        maxLength = {4}
+                        value={masker(unMask(values.pac.toString()),["9999"])}
+                        />
                       </div>
                       <div className='sap-form-container-input-column sap-form-container-input-column-w40'>
                         <label>Recursos Extraorçamentários</label>
@@ -251,15 +255,15 @@ function EditarAquisicao(){
                 <label>Anotações</label>
                     <Field
                       as='textarea'
-                      className={errors.Anotações && touched.Anotações ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
+                      className={errors.anotações && touched.anotações ? "form-input form-input-w100 form-input-error form-input-textarea" : "form-input form-input-textarea form-input-w100 "} 
                       type="textarea"
-                      name='Anotações'
+                      name='anotacoes'
                     />
                 <div className="form-footer">
                   <button 
                     type='submit' 
                     className="form-btn">
-                      Salvar
+                      Cadastrar
                   </button>
                   <div className="clear"></div>
                 </div>
@@ -272,4 +276,4 @@ function EditarAquisicao(){
   );
 }
 
-export default EditarAquisicao;
+export default Aquisicao;
