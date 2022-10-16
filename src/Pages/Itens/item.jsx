@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {Formik, Field, Form} from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
-import VMasker from "vanilla-masker";
+import{setValor} from '../../Utils/Function';
 
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Schema from '../../Utils/ShemaItens';
@@ -9,25 +9,33 @@ import useApi from '../../Services/useApi';
 
 import '../../Styles/form.css';
 
-function EditarItem(){
+//Setando valores iniciais para item(Quando é cadastro)
+const initialValue = {
+  nome: '',
+  catmat: '',
+  valorMed: '',
+  descricao: '',
+  unidadeMedida: ''
+}
+
+function Item(){
   const navigateTo = useNavigate();
   const {id} = useParams();
   const [valorMedio, setValorMedio] = useState();
-  const [item, setItem] = useState({
-    nome: '',
-    catmat: '',
-    valorMed: '',
-    descricao: '',
-  });
+  const [item, setItem] = useState(initialValue);
+  //setando save de item
   const [save] = useApi({
-    url: `/itens/${id}`,
-    method: 'put',
+    url: id ? `/itens/${id}` : `/itens`,
+    method: id ? 'put' : 'post',
     onCompleted: (response) => {
       if (!response.error){
+        id ? alert(' Editado Com Sucesso!') : alert(' Cadastrado Com Sucesso!');
         navigateTo('/colic/itens');
       }
     }
   });
+
+  //setando carregamento iten se houver
   const [load] = useApi({
     url: `/itens/${id}`,
     method: 'get',
@@ -37,12 +45,20 @@ function EditarItem(){
   }
   );
 
+  //chamando carregando do itens
+  useEffect(() => {
+    if (id) {
+      load();
+    }
+  }, [id]);
+  
   function onSubmit(values) {
     var sendValues = {
       id: values.id,
       nome: values.nome,
       catmat: values.catmat,
       valorMed: valorMedio,
+      unidadeMedida: values.unidadeMedida,
       descricao: values.descricao,
     };
     save({
@@ -50,19 +66,10 @@ function EditarItem(){
     });
   };
 
-  function onChange(vmed) {
-    const valor_medio = VMasker.toMoney(vmed, {
-      precision: 2,
-      separator: ",",
-      delimiter: ".",
-      unit: "R$"
-    });
-    setValorMedio(valor_medio);
-  };
-
-  useEffect(() => {
-    load();
-  }, [id]);
+  //Formatando Valor em Reais
+  function onChange(valor_total) {
+    setValorMedio(setValor(valor_total));
+  }
   
   return (
     <div className="sap-container">
@@ -80,7 +87,7 @@ function EditarItem(){
                 className="sap-form-container"
               >
                 <div className="form-title">
-                  <h1>EDITAR {item.nome}</h1>
+                  <h1>{id ? 'Editar Item' : 'Cadastrar Item'}</h1>
                 </div>
                 <div className="form-elements">
                   <div className="form-elements-column">
@@ -105,6 +112,12 @@ function EditarItem(){
                       className={errors.catmat && touched.catmat ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="text"
                       name='catmat' 
+                    />
+                    <label>Unidade de Medida</label>
+                    <Field
+                      className={errors.unidadeMedida && touched.unidadeMedida ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
+                      type="text"
+                      name='unidadeMedida' 
                     />
                   </div>
                 </div>
@@ -132,4 +145,4 @@ function EditarItem(){
   );
 }
 
-export default EditarItem;
+export default Item;
