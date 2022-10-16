@@ -101,7 +101,7 @@ function VizualizarEmpenho() {
                 value={empenho.dataInclusao}
                 disabled 
               />
-              <label>Data Confirmação</label>
+              <label>Data de Recebimento</label>
               <input
                 className="form-input form-input-w100 sap-form-input-disabled"
                 type="date"
