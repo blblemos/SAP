@@ -165,7 +165,7 @@ function Empenho() {
                     type="date"
                     name='dataInclusao'
                     />
-                    <label>Data Confirmação</label>
+                    <label>Data de Recebimento</label>
                     <Field
                       className={errors.dataConfirmacao && touched.dataConfirmacao ? "form-input form-input-w100 form-input-error" : "form-input form-input-w100 "}  
                       type="date"

@@ -11,10 +11,10 @@ Yup.addMethod(Yup.string, "verifyColic", function (errorMessage) {
 });
 
 export default Yup.object().shape({
-  NomeServidor: Yup.string().required(),
-  EmailServidor: Yup.string().email().required(),
-  CargoServidor: Yup.string().required(),
-  CelularServidor: Yup.string().required(),
+  nome: Yup.string().required(),
+  email: Yup.string().email().required(),
+  cargo: Yup.string().required(),
+  celular: Yup.string().required(),
   /*FotoServidor: Yup.string().required(),*/
-  SetorServidor: Yup.string().required().verifyColic(),
+  /*setor: Yup.string().required().verifyColic(),*/
 })

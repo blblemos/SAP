@@ -9,10 +9,10 @@ import CadastrarSetor from './Pages/Setores/cadastro';
 import EditarSetor from './Pages/Setores/editar';
 import VizualizarSetor from './Pages/Setores/vizualizar';
 import ListaAquisicoes from './Pages/Aquisicoes/ListaAquisicoes';
-import CadastrarAquisicao from './Pages/Aquisicoes/cadastro';
+import Aquisicao from './Pages/Aquisicoes/aquisicao';
 import VizualizarAquisicao from './Pages/Aquisicoes/aquisicoes';
-import EditarAquisicao from './Pages/Aquisicoes/editar';
 import Empenho from './Pages/Empenho/empenho';
+import Servidor from './Pages/Servidor/servidor';
 import AddCobranca from './Pages/Cobranca/cadastrar';
 import VizualizarEmpenho from './Pages/Empenho/vizualizar';
 import CadastrarFornecedor from './Pages/Fornecedores/cadastro';
@@ -21,11 +21,8 @@ import ListaFornecedor from './Pages/Fornecedores/lista';
 import EditarFornecedor from './Pages/Fornecedores/editar';
 import VizualizarFornecedor from './Pages/Fornecedores/vizualizar';
 import ListaServidor from './Pages/Servidor/lista';
-import Cadastrarservidor from './Pages/Servidor/cadastro';
-import EditarServidor from './Pages/Servidor/editar';
 import VizualizarServidor from './Pages/Servidor/vizualizar';
-import CadastrarItem from './Pages/Itens/cadastro';
-import EditarItem from './Pages/Itens/editar';
+import Item from './Pages/Itens/item';
 import VizualizarItem from './Pages/Itens/vizualizar';
 import ListaItem from './Pages/Itens/lista';
 import SignUp from './Pages/Login/login';
@@ -47,21 +44,21 @@ function Rotas() {
             <Route path="/colic/item/:id" element={<VizualizarItem/>} />
             <Route path="/colic/empenho/:idAquisicao/:idEmpenho/:numeroEmpenho" element={<VizualizarEmpenho/>} />
             <Route path="/colic/vizualizar/fornecedor/:id" element={<VizualizarFornecedor/>} />
-            <Route path="/colic/cadastrar/aquisicao" element={<CadastrarAquisicao/>} />
+            <Route path="/colic/cadastrar/aquisicao" element={<Aquisicao/>} />
             <Route path="/colic/cadastrar/setor" element={<CadastrarSetor/>} />
             <Route path="/colic/cadastrar/fornecedor" element={<CadastrarFornecedor/>} />
-            <Route path="/colic/cadastrar/item" element={<CadastrarItem/>} />
-            <Route path="/colic/cadastrar/servidor" element={<Cadastrarservidor/>} />
+            <Route path="/colic/cadastrar/item" element={<Item/>} />
+            <Route path="/colic/cadastrar/servidor" element={<Servidor/>} />
             <Route path="/colic/cadastrar/empenho/:idAquisicao" element={<Empenho/>} />
             <Route path="/colic/cadastrar/cobranca/:id/:aquisicao" element={<AddCobranca/>} />
             <Route path="/colic/cadastrar/cobranca/:id/:aquisicao/:idCobranca" element={<AddCobranca/>} />
-            <Route path="/colic/editar/servidor/:id" element={<EditarServidor/>} />
-            <Route path="/colic/editar/aquisicoes/:id" element={<EditarAquisicao/>} />
+            <Route path="/colic/editar/servidor/:id" element={<Servidor/>} />
+            <Route path="/colic/editar/aquisicoes/:id" element={<Aquisicao/>} />
             <Route path="/colic/editar/fornecedor/:id" element={<EditarFornecedor/>} />
             <Route path="/colic/editar/empenho/:idAquisicao/:idEmpenho" element={<Empenho/>} />
             <Route path="/colic/editar/setor/:id" element={<EditarSetor/>} />
             <Route path="/colic/editar/entrega/:idAquisicao/:idEmpenho" element={<EditarEntrega/>} />
-            <Route path="/colic/editar/item/:id" element={<EditarItem/>} />
+            <Route path="/colic/editar/item/:id" element={<Item/>} />
             <Route path="/colic/home" element={<HomeColic/>} />
             <Route path="/" element={<HomeColic/>} />
           </Route>
