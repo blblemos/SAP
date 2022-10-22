@@ -57,7 +57,7 @@ function Rotas() {
             <Route path="/colic/editar/fornecedor/:id" element={<EditarFornecedor/>} />
             <Route path="/colic/editar/empenho/:idAquisicao/:idEmpenho" element={<Empenho/>} />
             <Route path="/colic/editar/setor/:id" element={<EditarSetor/>} />
-            <Route path="/colic/editar/entrega/:idAquisicao/:idEmpenho" element={<EditarEntrega/>} />
+            <Route path="/colic/editar/entrega/:idAquisicao/:idEmpenho/:idEntrega" element={<EditarEntrega/>} />
             <Route path="/colic/editar/item/:id" element={<Item/>} />
             <Route path="/colic/home" element={<HomeColic/>} />
             <Route path="/" element={<HomeColic/>} />
