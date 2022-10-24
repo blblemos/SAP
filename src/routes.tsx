@@ -17,6 +17,7 @@ import AddCobranca from './Pages/Cobranca/cadastrar';
 import VizualizarEmpenho from './Pages/Empenho/vizualizar';
 import CadastrarFornecedor from './Pages/Fornecedores/cadastro';
 import EditarEntrega from './Pages/Entrega/editar';
+import EditarPagamento from './Pages/Pagamento/pagamento';
 import ListaFornecedor from './Pages/Fornecedores/lista';
 import EditarFornecedor from './Pages/Fornecedores/editar';
 import VizualizarFornecedor from './Pages/Fornecedores/vizualizar';
@@ -57,7 +58,8 @@ function Rotas() {
             <Route path="/colic/editar/fornecedor/:id" element={<EditarFornecedor/>} />
             <Route path="/colic/editar/empenho/:idAquisicao/:idEmpenho" element={<Empenho/>} />
             <Route path="/colic/editar/setor/:id" element={<EditarSetor/>} />
-            <Route path="/colic/editar/entrega/:idAquisicao/:idEmpenho" element={<EditarEntrega/>} />
+            <Route path="/colic/editar/entrega/:idAquisicao/:idEmpenho/:idEntrega" element={<EditarEntrega/>} />
+            <Route path="/colic/editar/pagamento/:idAquisicao/:idEmpenho/:idPagamento" element={<EditarPagamento/>} />
             <Route path="/colic/editar/item/:id" element={<Item/>} />
             <Route path="/colic/home" element={<HomeColic/>} />
             <Route path="/" element={<HomeColic/>} />

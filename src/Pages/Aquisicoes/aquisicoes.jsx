@@ -4,10 +4,11 @@ import {RiEditBoxFill} from 'react-icons/ri';
 import { MdDelete} from 'react-icons/md';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-
+import useApi from '../../Services/useApi';
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import Status from '../../Components/Status/status';
 import Anotacoes from '../../Components/Anotacoes/anotacoes';
+import{FormataStringData} from '../../Utils/Function';
 import {api, Config, SetarTokenNull} from '../../Services/api';
 
 import '../../Styles/form.css';
@@ -24,9 +25,26 @@ function VizualizarAquisicao(){
   const [servidor,setServidor] = useState({});
   const [setor,setSetor] = useState({});
   const [empenhos,setEmpenhos] = useState([]);
-  const [entrega,setEntrega] = useState([]);console.log(entrega);
+  const [entrega,setEntrega] = useState([]);
+  const [pagamento,setPagamento] = useState([]);
   {/*Definir Set de modal*/}
   const [modal, setModal] = useState('');
+  //Chamando entregas da aquisição
+  const [loadEntrega] = useApi({
+    url: `/views/entregas/${id}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setEntrega(response.data);
+    }
+  });
+  //Chamando pagamentos da aquisição
+  const [loadPagamento] = useApi({
+    url: `/views/pagamentos/${id}`,
+    method: 'get',
+    onCompleted: (response) => {
+      setPagamento(response.data);
+    }
+  });
   {/*Selecionar Modal ativa*/}
   let divModal; 
   switch (modal) {
@@ -65,22 +83,9 @@ function VizualizarAquisicao(){
         alert("O processo ainda não possui empenhos");
       });
     });
-    //Pegando entregas relacionadas aos empenhos da aquisição
-    let addEntrega = [];
-    empenhos.map(empenho => {
-      api.get(`entregas/search?empenho=${empenho.numeroEmpenho}`, config).then(response => {
-        addEntrega.push({
-          id: response.data[0].id,
-          recebimentoFornecedor: response.data[0].recebimentoFornecedor,
-          entregue: response.data[0].entregue,
-          servidor: response.data[0].servidor,
-          dataAteste: response.data[0].dataAteste
-        });
-      }).catch(function (error){
-        console.log("deu erro");
-      });
-    });
-    setEntrega(addEntrega);
+    //Pegando entregas e pagamentos relacionados aos empenhos da aquisição
+    loadEntrega();
+    loadPagamento();
   }, []);
   //Deleta Empenho
   function onClickDeleteEmpenho(idEmpenho){
@@ -136,29 +141,29 @@ function VizualizarAquisicao(){
 
   const columns_entrega = [
     {
-      dataField: 'id',
+      dataField: 'numero_empenho',
       text: 'Empenho',
       formatter: (row, rowIndex) => (
-        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
+        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.empenho+'/'+rowIndex.numero_empenho}>{row}</Link>
       ),
     },
     {
-      dataField: 'id',
+      dataField: 'status_entrega',
       text: 'Status da Entrega'
     },
     {
-      dataField: 'entregue',
+      dataField: 'data_ateste',
       text: 'Ateste',
       formatter: (row, rowIndex) => (
-        <span className='sap-table-link'>{row}</span>
+        <span className='sap-table'>{row != null && rowIndex.atestou+" | "+FormataStringData(row)}</span>
       ),
     },
     {
-      dataField: 'entregue',
+      dataField: 'entrega',
       text: '',
-      formatter: (row) => (
+      formatter: (row, rowIndex) => (
         <div className='sap-div-table-link-icon'>
-          <Link className='sap-table-link-icon'  to={'/colic/editar/entrega/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/entrega/'+id+'/'+rowIndex.empenho+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
           <br />
         </div>
       ),
@@ -167,30 +172,30 @@ function VizualizarAquisicao(){
 
   const columns_pagamento = [
     {
-      dataField: 'numeroEmpenho',
+      dataField: 'numero_empenho',
       text: 'Empenho',
       formatter: (row, rowIndex) => (
-        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.id}>{row}</Link>
+        <Link className='sap-table-link'  to={'/colic/empenho/'+id+'/'+rowIndex.empenho+'/'+rowIndex.numero_empenho}>{row}</Link>
       ),
     },
     {
-      dataField: 'valorTotalNE',
+      dataField: 'status_pagamento',
       text: 'Status do Pagamento'
     },
     {
-      dataField: 'valorTotalNE',
+      dataField: 'nota_fiscal',
       text: 'Nota Fiscal'
     },
     {
-      dataField: 'valorTotalNE',
+      dataField: 'ordem_bancaria',
       text: 'Ordem Bancária'
     },
     {
-      dataField: 'id',
+      dataField: 'pagamento',
       text: '',
-      formatter: (row) => (
+      formatter: (row, rowIndex) => (
         <div className='sap-div-table-link-icon'>
-          <Link className='sap-table-link-icon'  to={'/colic/editar/empenho/'+id+'/'+row}><RiEditBoxFill size={25} color="#09210E"/></Link>
+          <Link className='sap-table-link-icon'  to={'/colic/editar/pagamento/'+id+'/'+rowIndex.empenho+'/'+rowIndex.pagamento}><RiEditBoxFill size={25} color="#09210E"/></Link>
           <br />
         </div>
       ),
@@ -354,7 +359,7 @@ function VizualizarAquisicao(){
               </div>
               }
               
-              {/*//Tabela Entrega
+              {//Tabela Entrega
                 empenhos.length > 0 && 
                 <div className='sap-div-table-aquisicao'>
                   <div className="sap-table-title">
@@ -389,7 +394,7 @@ function VizualizarAquisicao(){
                   </div>
                   <ToolkitProvider
                     keyField ='id'
-                    data={empenhos}
+                    data={pagamento}
                     columns={columns_pagamento}
                   >
                     {
@@ -405,7 +410,7 @@ function VizualizarAquisicao(){
                         )
                     }
                 </ToolkitProvider>
-              </div>*/
+              </div>
               }
       </div>
       

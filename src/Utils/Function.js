@@ -10,3 +10,16 @@ export function setValor(valor_total) {
   });
   return valorT;
 };
+
+//Função para formatar data
+export function FormataStringData(data) { 
+  if (data != null) {
+    var dia  = data.split("-")[2];
+    var mes  = data.split("-")[1];
+    var ano  = data.split("-")[0];
+    return dia + '/' + (mes) + '/' + (ano);
+  }else{
+    return null;
+  }
+  
+}
