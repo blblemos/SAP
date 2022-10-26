@@ -100,7 +100,7 @@ function Aquisicao(){
       aquisicao.servidor = {
         id: values.servidor.id
       }
-      console.log(aquisicao);
+      aquisicao.linkProcesso = linkProcesso;
       save({
         data: aquisicao
       });
