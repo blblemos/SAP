@@ -14,7 +14,10 @@ function NavbarMenu() {
       </div>
 
       <div className="navbarmenu-container-alert">
-        <IoAlertCircleSharp size={40} color="#2B9F3F" />
+      <Link to="/colic/alertas">
+        <IoAlertCircleSharp size={40} color="#CE1218" />
+        </Link>
+        
       </div>
 
       <div className="navbarmenu-container-logo">

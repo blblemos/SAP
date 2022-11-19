@@ -4,6 +4,7 @@ import RoutesPrivate from './Components/Routes/Private';
 
 import NotFound from './Pages/NotFound/404';
 import HomeColic from './Pages/Home-Colic/home-colic';
+import Alertas from './Pages/Alertas/alertas';
 import ListaSetor from './Pages/Setores/lista';
 import CadastrarSetor from './Pages/Setores/cadastro';
 import EditarSetor from './Pages/Setores/editar';
@@ -62,6 +63,7 @@ function Rotas() {
             <Route path="/colic/editar/pagamento/:idAquisicao/:idEmpenho/:idPagamento" element={<EditarPagamento/>} />
             <Route path="/colic/editar/item/:id" element={<Item/>} />
             <Route path="/colic/home" element={<HomeColic/>} />
+            <Route path="/colic/alertas" element={<Alertas/>} />
             <Route path="/" element={<HomeColic/>} />
           </Route>
           <Route path="/*" element={<NotFound/>} />
