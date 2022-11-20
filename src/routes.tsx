@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {HashRouter , Routes, Route} from 'react-router-dom';
 import StoreProvider from './Components/Store/Provider';
 import RoutesPrivate from './Components/Routes/Private';
 
@@ -33,7 +33,7 @@ import SignUp from './Pages/Login/login';
 
 function Rotas() {
   return (
-    <BrowserRouter>
+    <HashRouter >
       <StoreProvider>
         <Routes>
           <Route path="" element={<RoutesPrivate />} >
@@ -75,7 +75,7 @@ function Rotas() {
           </Routes>
       </StoreProvider>
       
-    </BrowserRouter>
+    </HashRouter >
   );
 }
 
