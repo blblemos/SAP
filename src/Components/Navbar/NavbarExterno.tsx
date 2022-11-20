@@ -1,21 +1,18 @@
 import { Link } from 'react-router-dom';
-import {IoAlertCircleSharp} from 'react-icons/io5'
-
-import Menu from '../../Components/Menu/Menu';
+import {FaUserCircle} from 'react-icons/fa'
 
 import './Navbar.css';
 
-function NavbarMenu() {
+function NavbarExterno() {
   return (
     <div className="container-navbar">
-      <Menu />
       <div className="navbarmenu-txt-title">
-        <Link to="/"><h1>SISTEMA DE ACOMPANHAMENTO DE PROCESSOS<b>|SAP</b></h1></Link>
+        <Link to="/home"><h1>SISTEMA DE ACOMPANHAMENTO DE PROCESSOS<b>|SAP</b></h1></Link>
       </div>
 
       <div className="navbarmenu-container-alert">
-      <Link to="/colic/alertas">
-        <IoAlertCircleSharp size={40} color="#CE1218" />
+      <Link to="/">
+        <FaUserCircle size={40} color="#2B9F3F" />
         </Link>
         
       </div>
@@ -27,4 +24,4 @@ function NavbarMenu() {
   );
 }
 
-export default NavbarMenu;
+export default NavbarExterno;

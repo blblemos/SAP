@@ -1,9 +1,11 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {HashRouter , Routes, Route} from 'react-router-dom';
 import StoreProvider from './Components/Store/Provider';
 import RoutesPrivate from './Components/Routes/Private';
 
 import NotFound from './Pages/NotFound/404';
 import HomeColic from './Pages/Home-Colic/home-colic';
+import HomeExterno from './Pages/Home-Externo/home-externo';
+import Alertas from './Pages/Alertas/alertas';
 import ListaSetor from './Pages/Setores/lista';
 import CadastrarSetor from './Pages/Setores/cadastro';
 import EditarSetor from './Pages/Setores/editar';
@@ -11,6 +13,7 @@ import VizualizarSetor from './Pages/Setores/vizualizar';
 import ListaAquisicoes from './Pages/Aquisicoes/ListaAquisicoes';
 import Aquisicao from './Pages/Aquisicoes/aquisicao';
 import VizualizarAquisicao from './Pages/Aquisicoes/aquisicoes';
+import VizualizarAquisicaoExterno from './Pages/Home-Externo/vizualizar';
 import Empenho from './Pages/Empenho/empenho';
 import Servidor from './Pages/Servidor/servidor';
 import AddCobranca from './Pages/Cobranca/cadastrar';
@@ -30,7 +33,7 @@ import SignUp from './Pages/Login/login';
 
 function Rotas() {
   return (
-    <BrowserRouter>
+    <HashRouter >
       <StoreProvider>
         <Routes>
           <Route path="" element={<RoutesPrivate />} >
@@ -62,14 +65,17 @@ function Rotas() {
             <Route path="/colic/editar/pagamento/:idAquisicao/:idEmpenho/:idPagamento" element={<EditarPagamento/>} />
             <Route path="/colic/editar/item/:id" element={<Item/>} />
             <Route path="/colic/home" element={<HomeColic/>} />
+            <Route path="/colic/alertas" element={<Alertas/>} />
             <Route path="/" element={<HomeColic/>} />
           </Route>
           <Route path="/*" element={<NotFound/>} />
           <Route path="/signUp" element={<SignUp/>} />
+          <Route path="/home" element={<HomeExterno/>} />
+          <Route path="/externo/aquisicoes/:id" element={<VizualizarAquisicaoExterno/>} />
           </Routes>
       </StoreProvider>
       
-    </BrowserRouter>
+    </HashRouter >
   );
 }
 

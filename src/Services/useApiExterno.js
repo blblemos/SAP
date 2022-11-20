@@ -1,7 +1,5 @@
 import {useState} from 'react';
 import axios from 'axios';
-import {useContext} from 'react';
-import StoreContext from '../Components/Store/Context';
 
 const initialRequestInfo = {
   error: null,
@@ -11,7 +9,6 @@ const initialRequestInfo = {
 
 export default function useApi(config){
   const [requestInfo, setRequestInfo] = useState(initialRequestInfo);
-  let { token , setToken} = useContext(StoreContext);
   async function call(localConfig) {
     setRequestInfo({
       ...initialRequestInfo,
@@ -22,7 +19,6 @@ export default function useApi(config){
     try {
       response = await axios({
         baseURL: 'http://200.128.8.98:8080',
-        headers: { Authorization: token },
         ...config,
         ...localConfig,
         
@@ -32,9 +28,6 @@ export default function useApi(config){
         data: response.data,
       });
     } catch (error) {
-      if(error.response.status == 403){
-        setToken(null);
-      }
       setRequestInfo({
         ...initialRequestInfo,
         error,
