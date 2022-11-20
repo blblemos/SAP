@@ -11,7 +11,7 @@ const initialRequestInfo = {
 
 export default function useApi(config){
   const [requestInfo, setRequestInfo] = useState(initialRequestInfo);
-  let { token } = useContext(StoreContext);
+  let { token , setToken} = useContext(StoreContext);
   async function call(localConfig) {
     setRequestInfo({
       ...initialRequestInfo,
@@ -32,6 +32,9 @@ export default function useApi(config){
         data: response.data,
       });
     } catch (error) {
+      if(error.response.status == 403){
+        setToken(null);
+      }
       setRequestInfo({
         ...initialRequestInfo,
         error,
