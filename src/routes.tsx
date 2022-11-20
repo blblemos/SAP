@@ -4,6 +4,7 @@ import RoutesPrivate from './Components/Routes/Private';
 
 import NotFound from './Pages/NotFound/404';
 import HomeColic from './Pages/Home-Colic/home-colic';
+import HomeExterno from './Pages/Home-Externo/home-externo';
 import Alertas from './Pages/Alertas/alertas';
 import ListaSetor from './Pages/Setores/lista';
 import CadastrarSetor from './Pages/Setores/cadastro';
@@ -12,6 +13,7 @@ import VizualizarSetor from './Pages/Setores/vizualizar';
 import ListaAquisicoes from './Pages/Aquisicoes/ListaAquisicoes';
 import Aquisicao from './Pages/Aquisicoes/aquisicao';
 import VizualizarAquisicao from './Pages/Aquisicoes/aquisicoes';
+import VizualizarAquisicaoExterno from './Pages/Home-Externo/vizualizar';
 import Empenho from './Pages/Empenho/empenho';
 import Servidor from './Pages/Servidor/servidor';
 import AddCobranca from './Pages/Cobranca/cadastrar';
@@ -68,6 +70,8 @@ function Rotas() {
           </Route>
           <Route path="/*" element={<NotFound/>} />
           <Route path="/signUp" element={<SignUp/>} />
+          <Route path="/home" element={<HomeExterno/>} />
+          <Route path="/externo/aquisicoes/:id" element={<VizualizarAquisicaoExterno/>} />
           </Routes>
       </StoreProvider>
       
