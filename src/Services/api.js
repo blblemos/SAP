@@ -3,7 +3,7 @@ import {useContext} from 'react';
 import StoreContext from '../Components/Store/Context';
 
 export const api = axios.create({
-    baseURL: 'http://200.128.8.98:8080'
+    baseURL: 'http://200.128.8.98:6731'
 });
 
 export function Config(){
