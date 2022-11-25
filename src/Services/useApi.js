@@ -21,7 +21,7 @@ export default function useApi(config){
     
     try {
       response = await axios({
-        baseURL: 'http://200.128.8.98:8080',
+        baseURL: 'http://200.128.8.98:6731',
         headers: { Authorization: token },
         ...config,
         ...localConfig,
