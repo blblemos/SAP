@@ -20,9 +20,9 @@ function NavbarMenu() {
         
       </div>
 
-      <div className="navbarmenu-container-logo">
+      <Link to="/home" className="navbarmenu-container-logo">
 
-      </div>
+      </Link>
     </div>
   );
 }
