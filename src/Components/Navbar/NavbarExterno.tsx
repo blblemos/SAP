@@ -11,7 +11,7 @@ function NavbarExterno() {
       </div>
 
       <div className="navbarmenu-container-alert">
-      <Link to="/">
+      <Link to="/colic/home">
         <FaUserCircle size={40} color="#2B9F3F" />
         </Link>
         

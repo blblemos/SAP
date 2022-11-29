@@ -71,6 +71,7 @@ function EditarEntrega() {
         entrega.recebimentoFornecedor = values.recebimentoFornecedor;
         entrega.empenho = {id: parseInt(idEmpenho)};
         entrega.entregue = 'Aguardando Ateste';
+        entrega.statusAteste = 'Aguardando Ateste';
       }else{
         entrega.recebimentoFornecedor = values.recebimentoFornecedor;
         entrega.servidor = values.servidor;
