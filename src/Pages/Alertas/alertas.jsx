@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import NavbarMenu from '../../Components/Navbar/Navbar';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import {MdOutlineOpenInNew} from 'react-icons/md';
+import {GrNotes} from 'react-icons/gr';
+import{FormataStringData} from '../../Utils/Function';
+import Anotacoes from '../../Components/Anotacoes/anotacoes';
 
 import useApi from '../../Services/useApi';
 
@@ -16,46 +18,71 @@ function Alertas() {
   const [entrega,setEntrega] = useState([]);
   const [ateste,setAteste] = useState([]);
   const [pagamento,setPagamento] = useState([]);
-//Set de entrega
-const[loadEntrega] = useApi({
-  url: '/views/alertaentrega',
-  method: 'get',
-  onCompleted: (response) => {
-    setEntrega(response.data);
+  {/*Definir Set de modal*/}
+  const [modal, setModal] = useState('');
+  const [divModal, setDivModal] = useState('');
+  //Set de entrega
+  const[loadEntrega] = useApi({
+    url: '/views/alertaentrega',
+    method: 'get',
+    onCompleted: (response) => {
+      setEntrega(response.data);
+    }
   }
-}
-);
-//Set de ateste
-const[loadAteste] = useApi({
-  url: '/views/alertaateste',
-  method: 'get',
-  onCompleted: (response) => {
-    setAteste(response.data);
+  );
+  //Set de ateste
+  const[loadAteste] = useApi({
+    url: '/views/alertaateste',
+    method: 'get',
+    onCompleted: (response) => {
+      setAteste(response.data);
+    }
   }
-}
-); 
-//Set de pagamento
-const[loadPagamento] = useApi({
-  url: '/views/alertapagamento',
-  method: 'get',
-  onCompleted: (response) => {
-    setPagamento(response.data);
+  ); 
+  //Set de pagamento
+  const[loadPagamento] = useApi({
+    url: '/views/alertapagamento',
+    method: 'get',
+    onCompleted: (response) => {
+      setPagamento(response.data);
+    }
   }
-}
-); 
+  );
+  //Carregando aquisicao e chamando componente anotação
+  const [loadAquisicao] = useApi({
+    method: 'get',
+    onCompleted: (response) => { 
+      setDivModal(<Anotacoes
+        aquisicao={response.data}
+        anotacao={response.data.anotacoes}
+        onChangeModal={setModal}
+      />)
+    }
+  });
 
-useEffect(() => {
-  loadEntrega();
-  loadAteste();
-  loadPagamento();
-}, []);
+  //Abrir anotação
+  function openModalNote(idAquisicao){
+    setModal('open');
+    loadAquisicao(
+      {url: `/aquisicoes/${idAquisicao}`}
+    );
+  };
 
-    const columns = [
+  useEffect(() => {
+    loadEntrega();
+    loadAteste();
+    loadPagamento();
+  }, []);
+
+    const columnsEntrega = [
       {
         dataField: 'numero_aquisicao',
         text: 'AQUISIÇÃO',
         formatter: (row, rowIndex) => (
-          <a className='sap-table-link' href={rowIndex.linkProcesso} target="_blank">{row}</a>
+          <div>
+            <Link className='sap-table-link' to={'/colic/aquisicoes/'+rowIndex.aquisicao} title='Visualizar'>{row}</Link>
+            <br />
+          </div>
         ),
       },
       {
@@ -69,12 +96,87 @@ useEffect(() => {
       {
         dataField: 'data_contagem',
         text: 'DATA',
+        formatter: (row) => (
+          <span className='sap-table'>{FormataStringData(row)}</span>
+        ),
       },{
         dataField: 'aquisicao',
         text: '',
         formatter: (row) => (
           <div>
-            <Link className='sap-table-link-icon' to={'/colic/aquisicoes/'+row} title='Visualizar'><MdOutlineOpenInNew size={25} color="#09210E"/></Link>
+            <a className='sap-table-link-icon' onClick={() => openModalNote(row)} title='Anotações'><GrNotes size={25} color="#09210E"/></a>
+            <br />
+          </div>
+        ),
+      }
+    ];
+    const columnsAteste = [
+      {
+        dataField: 'numero_aquisicao',
+        text: 'AQUISIÇÃO',
+        formatter: (row, rowIndex) => (
+          <div>
+            <Link className='sap-table-link' to={'/colic/aquisicoes/'+rowIndex.aquisicao} title='Visualizar'>{row}</Link>
+            <br />
+          </div>
+        ),
+      },
+      {
+        dataField: 'numero_empenho',
+        text: 'EMPENHO'
+      },
+      {
+        dataField: 'status_ateste',
+        text: 'STATUS',
+      },
+      {
+        dataField: 'data_contagem',
+        text: 'DATA',
+        formatter: (row) => (
+          <span className='sap-table'>{FormataStringData(row)}</span>
+        ),
+      },{
+        dataField: 'aquisicao',
+        text: '',
+        formatter: (row) => (
+          <div>
+            <a className='sap-table-link-icon' onClick={() => openModalNote(row)} title='Anotações'><GrNotes size={25} color="#09210E"/></a>
+            <br />
+          </div>
+        ),
+      }
+    ];
+    const columnsPagamento = [
+      {
+        dataField: 'numero_aquisicao',
+        text: 'AQUISIÇÃO',
+        formatter: (row, rowIndex) => (
+          <div>
+            <Link className='sap-table-link' to={'/colic/aquisicoes/'+rowIndex.aquisicao} title='Visualizar'>{row}</Link>
+            <br />
+          </div>
+        ),
+      },
+      {
+        dataField: 'numero_empenho',
+        text: 'EMPENHO'
+      },
+      {
+        dataField: 'status_pagamento',
+        text: 'STATUS',
+      },
+      {
+        dataField: 'data_contagem',
+        text: 'DATA',
+        formatter: (row) => (
+          <span className='sap-table'>{FormataStringData(row)}</span>
+        ),
+      },{
+        dataField: 'aquisicao',
+        text: '',
+        formatter: (row) => (
+          <div>
+            <a className='sap-table-link-icon' onClick={() => openModalNote(row)} title='Anotações'><GrNotes size={25} color="#09210E"/></a>
             <br />
           </div>
         ),
@@ -117,6 +219,7 @@ useEffect(() => {
   return (
     <div className="sap-container">
       <NavbarMenu />
+      {modal=='' ?   '' : divModal}
       <div className='sap-container-page'>
         <div className='table-container'>
           {//Tabela Entrega
@@ -128,7 +231,7 @@ useEffect(() => {
                   <ToolkitProvider
                     keyField ='id'
                     data={entrega}
-                    columns={columns}
+                    columns={columnsEntrega}
                   >
                     {
                       props => (
@@ -155,7 +258,7 @@ useEffect(() => {
                   <ToolkitProvider
                     keyField ='id'
                     data={ateste}
-                    columns={columns}
+                    columns={columnsAteste}
                   >
                     {
                       props => (
@@ -182,7 +285,7 @@ useEffect(() => {
                   <ToolkitProvider
                     keyField ='id'
                     data={pagamento}
-                    columns={columns}
+                    columns={columnsPagamento}
                   >
                     {
                       props => (
